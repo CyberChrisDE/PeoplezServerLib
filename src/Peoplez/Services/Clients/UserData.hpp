@@ -33,32 +33,35 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef USERDATA_H_
-#define USERDATA_H_
+#ifndef PEOPLEZ_SERVICES_CLIENTS_USERDATA_H_
+#define PEOPLEZ_SERVICES_CLIENTS_USERDATA_H_
 
 // Extern includes
 #include <cstdint>
 
 namespace Peoplez
 {
-	namespace Clients
+	namespace Services
 	{
-		/**
-		 * @brief Container for the user information
-		 */
-		class UserData final
+		namespace Clients
 		{
-		public:
 			/**
-			 * @brief Standard constructor
+			 * @brief Container for the user information
 			 */
-			UserData() : ID(0) {}
-			/**
-			 * @brief ID of the user
-			 */
-			uint64_t ID;
-		};
-	} // namespace Clients
+			class UserData final
+			{
+			public:
+				/**
+				 * @brief Standard constructor
+				 */
+				UserData() : ID(0) {}
+				/**
+				 * @brief ID of the user
+				 */
+				uint64_t ID;
+			};
+		} // namespace Clients
+	} // namespace Services
 } // namespace Peoplez
 
-#endif // USERDATA_H_
+#endif // PEOPLEZ_SERVICES_CLIENTS_USERDATA_H_

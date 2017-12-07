@@ -33,12 +33,11 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESSOURCEMANAGER_H_
-#define RESSOURCEMANAGER_H_
+#ifndef PEOPLEZ_SYSTEM_RESOURCES_RESSOURCEMANAGER_H_
+#define PEOPLEZ_SYSTEM_RESOURCES_RESSOURCEMANAGER_H_
 
 // Local includes
 #include "../../Services/Http/HttpContext.hpp"
-#include "Enums.hpp"
 #include "ResourceHolder.hpp"
 
 // Extern includes
@@ -46,44 +45,47 @@
 
 namespace Peoplez
 {
-	namespace Resources
+	namespace System
 	{
-		/**
-		 * @brief Manages all resources the requests to them
-		 */
-		class ResourceManager final
+		namespace Resources
 		{
-		public:
 			/**
-			 * Constructor
-			 *
-			 * @param resourceDirectory Path to resources. Has to end with a '/'.
+			 * @brief Manages all resources the requests to them
 			 */
-			ResourceManager(String::PeoplezString const resourceDirectory)
-				: directory(resourceDirectory) {Initialize();}
-			/**
-			 * Initializer
-			 */
-			void Initialize() noexcept;
-			/**
-			 * Determins the content of a file in the public folder
-			 *
-			 * @pre fileName must be in text mode and the right to open such a file type must exist
-			 *
-			 * @param fileName Name of the file (including file extension)
-			 * @param hash Hash value of the resource at the client side (0 if none)
-			 *
-			 * @return Content of the file (empty string when failed)
-			 */
-			Resource GetResource(String::PeoplezString fileName, size_t hash);
-			//FileSaveStatus SaveFile(uint64_t userID, String::PeoplezString fileName, String::PeoplezString content) noexcept;
-			~ResourceManager();
-		private:
-			String::PeoplezString directory;
-			boost::ptr_vector<ResourceHolder> resources;
-			boost::mutex resourceMutex;
-		};
-	} // namespace Resources
+			class ResourceManager final
+			{
+			public:
+				/**
+				 * Constructor
+				 *
+				 * @param resourceDirectory Path to resources. Has to end with a '/'.
+				 */
+				ResourceManager(String::PeoplezString const resourceDirectory)
+					: directory(resourceDirectory) {Initialize();}
+				/**
+				 * Initializer
+				 */
+				void Initialize() noexcept;
+				/**
+				 * Determins the content of a file in the public folder
+				 *
+				 * @pre fileName must be in text mode and the right to open such a file type must exist
+				 *
+				 * @param fileName Name of the file (including file extension)
+				 * @param hash Hash value of the resource at the client side (0 if none)
+				 *
+				 * @return Content of the file (empty string when failed)
+				 */
+				Resource GetResource(String::PeoplezString fileName, size_t hash);
+				//FileSaveStatus SaveFile(uint64_t userID, String::PeoplezString fileName, String::PeoplezString content) noexcept;
+				~ResourceManager();
+			private:
+				String::PeoplezString directory;
+				boost::ptr_vector<ResourceHolder> resources;
+				boost::mutex resourceMutex;
+			};
+		} // namespace Resources
+	} // namespace System
 } // namespace Peoplez
 
-#endif // RESSOURCEMANAGER_H_
+#endif // PEOPLEZ_SYSTEM_RESOURCES_RESSOURCEMANAGER_H_

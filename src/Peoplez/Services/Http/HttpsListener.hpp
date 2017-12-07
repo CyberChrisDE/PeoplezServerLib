@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SRC_PEOPLEZ_SERVICES_HTTP_HTTPSLISTENER_HPP_
-#define SRC_PEOPLEZ_SERVICES_HTTP_HTTPSLISTENER_HPP_
+#ifndef PEOPLEZ_SERVICES_HTTP_HTTPSLISTENER_HPP_
+#define PEOPLEZ_SERVICES_HTTP_HTTPSLISTENER_HPP_
 
 #include "../../System/IO/Network/Listener.hpp"
 
@@ -73,4 +73,4 @@ namespace Peoplez
 	} // namespace Services
 } // namespace Peoplez
 
-#endif // SRC_PEOPLEZ_SERVICES_HTTP_HTTPSLISTENER_HPP_
+#endif // PEOPLEZ_SERVICES_HTTP_HTTPSLISTENER_HPP_

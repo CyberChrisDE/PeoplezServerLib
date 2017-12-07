@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MIMEOPERATIONS_H_
-#define MIMEOPERATIONS_H_
+#ifndef PEOPLEZ_GENERAL_MIMEOPERATIONS_H_
+#define PEOPLEZ_GENERAL_MIMEOPERATIONS_H_
 
 //Local includes
 #include "Enums.hpp"
@@ -42,23 +42,26 @@
 
 namespace Peoplez
 {
-	/**
-	 *
-	 */
-	namespace MimeOperations
+	namespace General
 	{
 		/**
-		 * Gives the name of a mime type
 		 *
-		 * @param mime Mime type to give name for
 		 */
-		String::PeoplezString MimeTypeToString(MimeType mime);
-		/**
-		 * Determines the mime type by its title
-		 *
-		 * @param mime Title of the mime type
-		 */
-		MimeType StringToMimeType(String::PeoplezString mime);
-	};
+		namespace MimeOperations
+		{
+			/**
+			 * Gives the name of a mime type
+			 *
+			 * @param mime Mime type to give name for
+			 */
+			String::PeoplezString MimeTypeToString(MimeType mime);
+			/**
+			 * Determines the mime type by its title
+			 *
+			 * @param mime Title of the mime type
+			 */
+			MimeType StringToMimeType(String::PeoplezString mime);
+		} // namespace MimeOperations
+	} // namespace General
 } // namespace Peoplez
-#endif // MIMEOPERATIONS_H_
+#endif // PEOPLEZ_GENERAL_MIMEOPERATIONS_H_

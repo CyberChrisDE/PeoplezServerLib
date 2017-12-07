@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CLIENT_H_
-#define CLIENT_H_
+#ifndef PEOPLEZ_SERVICES_CLIENTS_CLIENT_H_
+#define PEOPLEZ_SERVICES_CLIENTS_CLIENT_H_
 
 // Local includes
 #include "UserData.hpp"
@@ -44,42 +44,45 @@
 
 namespace Peoplez
 {
-	namespace Clients
+	namespace Services
 	{
-		/**
-		 * @brief Container for client information.
-		 */
-		class Client final
+		namespace Clients
 		{
-		public:
 			/**
-			 * Constructor
-			 *
-			 * @param sessionID Id of the client/session
-			 * @param userData Data of the clients user
+			 * @brief Container for client information.
 			 */
-			Client(uint64_t sessionID, std::shared_ptr<UserData> userData) : LastRequest(time(0)), SessionID(sessionID), Data(userData) {}
-			/**
-			 * Sets LastRequst to the actual time
-			 */
-			inline void Touch() noexcept {LastRequest = time(0);}
+			class Client final
+			{
+			public:
+				/**
+				 * Constructor
+				 *
+				 * @param sessionID Id of the client/session
+				 * @param userData Data of the clients user
+				 */
+				Client(uint64_t sessionID, std::shared_ptr<UserData> userData) : LastRequest(time(0)), SessionID(sessionID), Data(userData) {}
+				/**
+				 * Sets LastRequst to the actual time
+				 */
+				inline void Touch() noexcept {LastRequest = time(0);}
 
-			/**
-			 * Time of last request of the client
-			 *
-			 * Time of the last call of Touch()
-			 */
-			time_t LastRequest;
-			/**
-			 * SessionID of the client
-			 */
-			uint64_t SessionID;
-			/**
-			 * User as which the client is logged in
-			 */
-			std::shared_ptr<UserData> Data;
-		};
-	} // namespace Clients
+				/**
+				 * Time of last request of the client
+				 *
+				 * Time of the last call of Touch()
+				 */
+				time_t LastRequest;
+				/**
+				 * SessionID of the client
+				 */
+				uint64_t SessionID;
+				/**
+				 * User as which the client is logged in
+				 */
+				std::shared_ptr<UserData> Data;
+			};
+		} // namespace Clients
+	} // namespace Services
 } // namespace Peoplez
 
-#endif // CLIENT_H_
+#endif // PEOPLEZ_SERVICES_CLIENTS_CLIENT_H_

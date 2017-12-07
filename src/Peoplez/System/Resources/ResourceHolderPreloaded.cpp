@@ -51,71 +51,76 @@ namespace Peoplez
 {
 	// Local namespaces
 	using namespace String;
-	using namespace System::Logging;
+	using namespace General;
 
-	namespace Resources
+	namespace System
 	{
-		ResourceHolderPreloaded::ResourceHolderPreloaded(PeoplezString directory, PeoplezString fileName) : ResourceHolder(fileName), compressed(false), Path(directory + fileName), type(FILE_TYPE::NONE)
-		{
-			Path.EnsureZeroTermination();
-			size_t dotPosition = fileName.FindLast('.');
-			if(dotPosition != PeoplezString::NPOS) type = FileOperations::FileExtensionToFileType(fileName.Substring(dotPosition + 1));
-			compressed = IsCategoryOf(type, FILE_TYPE::TEXT);
-		}
+		using namespace Logging;
 
-		Resource ResourceHolderPreloaded::GetResource(size_t hashValue) noexcept(noexcept(Resource(false, "", RESOURCE_STATUS_ERROR, 0, FILE_TYPE::NONE)))
+		namespace Resources
 		{
-			try
+			ResourceHolderPreloaded::ResourceHolderPreloaded(PeoplezString directory, PeoplezString fileName) : ResourceHolder(fileName), compressed(false), Path(directory + fileName), type(FILE_TYPE::NONE)
 			{
-				boost::unique_lock<boost::mutex> lock(contentMutex);
+				Path.EnsureZeroTermination();
+				size_t dotPosition = fileName.FindLast('.');
+				if(dotPosition != PeoplezString::NPOS) type = FileOperations::FileExtensionToFileType(fileName.Substring(dotPosition + 1));
+				compressed = IsCategoryOf(type, FILE_TYPE::TEXT);
+			}
 
-				if(NeedsSetup())
+			Resource ResourceHolderPreloaded::GetResource(size_t hashValue) noexcept(noexcept(Resource(false, "", RESOURCE_STATUS_ERROR, 0, FILE_TYPE::NONE)))
+			{
+				try
 				{
-					lastSetup = time(0);
+					boost::unique_lock<boost::mutex> lock(contentMutex);
 
-					struct stat fileInfo;
-					stat(Path.GetData(), &fileInfo);
-
-					if(fileInfo.st_mtime != lastModified)
+					if(NeedsSetup())
 					{
-						lastModified = fileInfo.st_mtime;
-						off_t size = fileInfo.st_size;
-						char *data = new char[size];
+						lastSetup = time(0);
 
-						ifstream file(Path.GetData(), ios::in | ios::binary);
+						struct stat fileInfo;
+						stat(Path.GetData(), &fileInfo);
 
-						if(file.is_open())
+						if(fileInfo.st_mtime != lastModified)
 						{
-							file.read(data, size);
-							file.close();
-							PeoplezString newContent(data, size);
-							size_t newHash = newContent.HashValue();
-							if(newHash != hash)
-							{
-								content = newContent;
-								if(compressed) content.Compress();
-								hash = newHash;
-							}
-						}
+							lastModified = fileInfo.st_mtime;
+							off_t size = fileInfo.st_size;
+							char *data = new char[size];
 
-						delete[] data;
+							ifstream file(Path.GetData(), ios::in | ios::binary);
+
+							if(file.is_open())
+							{
+								file.read(data, size);
+								file.close();
+								PeoplezString newContent(data, size);
+								size_t newHash = newContent.HashValue();
+								if(newHash != hash)
+								{
+									content = newContent;
+									if(compressed) content.Compress();
+									hash = newHash;
+								}
+							}
+
+							delete[] data;
+						}
+					}
+
+					if(hashValue == hash) return Resource();
+					else
+					{
+						PeoplezString uniqueContent = content;
+						uniqueContent.ToUnique();
+						return Resource(compressed, uniqueContent, RESOURCE_STATUS_UPDATED, hash, type);
 					}
 				}
-
-				if(hashValue == hash) return Resource();
-				else
+				catch (...)
 				{
-					PeoplezString uniqueContent = content;
-					uniqueContent.ToUnique();
-					return Resource(compressed, uniqueContent, RESOURCE_STATUS_UPDATED, hash, type);
+					Logger::LogException("Error in ResourceHolderPreloaded::GetResource", __FILE__, __LINE__);
 				}
-			}
-			catch (...)
-			{
-				Logger::LogException("Error in ResourceHolderPreloaded::GetResource", __FILE__, __LINE__);
-			}
 
-			return Resource(false, "", RESOURCE_STATUS_ERROR, 0, FILE_TYPE::NONE);
-		}
-	} // namespace Resources
+				return Resource(false, "", RESOURCE_STATUS_ERROR, 0, FILE_TYPE::NONE);
+			}
+		} // namespace Resources
+	} // namespace System
 } // namespace Peoplez

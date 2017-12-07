@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ENUMS_H_
-#define ENUMS_H_
+#ifndef PEOPLEZ_GENERAL_ENUMS_H_
+#define PEOPLEZ_GENERAL_ENUMS_H_
 
 namespace LANGUAGE
 {
@@ -226,4 +226,4 @@ enum FileSaveStatus
 	FILE_SAVE_STATUS_ERROR
 };
 
-#endif // ENUMS_H_
+#endif // PEOPLEZ_GENERAL_ENUMS_H_

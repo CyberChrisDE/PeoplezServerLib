@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PEOPLEZ_SYSTEM_IO_NETWORK_SECURE_SOCKET_HPP_
-#define PEOPLEZ_SYSTEM_IO_NETWORK_SECURE_SOCKET_HPP_
+#ifndef PEOPLEZ_SYSTEM_IO_NETWORK_SECURESOCKET_HPP_
+#define PEOPLEZ_SYSTEM_IO_NETWORK_SECURESOCKET_HPP_
 
 // Local includes
 #include "Socket.hpp"
@@ -101,4 +101,4 @@ namespace Peoplez
 	} // namespace System
 } // namespace Peoplez
 
-#endif // PEOPLEZ_SYSTEM_IO_NETWORK_SECURE_SOCKET_HPP_
+#endif // PEOPLEZ_SYSTEM_IO_NETWORK_SECURESOCKET_HPP_

@@ -40,27 +40,30 @@ using namespace std;
 
 namespace Peoplez
 {
-	namespace Clients
+	namespace Services
 	{
-		User::User(uint64_t const sessionID, std::shared_ptr<Client> const client)
+		namespace Clients
 		{
-			clients.insert(std::pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
-		}
+			User::User(uint64_t const sessionID, std::shared_ptr<Client> const client)
+			{
+				clients.insert(std::pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
+			}
 
-		void User::Add(uint64_t const sessionID, shared_ptr<Client> const client)
-		{
-			clients.insert(std::pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
-		}
+			void User::Add(uint64_t const sessionID, shared_ptr<Client> const client)
+			{
+				clients.insert(std::pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
+			}
 
-		std::shared_ptr<Client> User::GetClient()
-		{
-			if(clients.empty()) return shared_ptr<Client>(0);
-			else return clients.begin()->second;
-		}
+			std::shared_ptr<Client> User::GetClient()
+			{
+				if(clients.empty()) return shared_ptr<Client>(0);
+				else return clients.begin()->second;
+			}
 
-		void User::Remove(uint64_t const sessionID)
-		{
-			clients.erase(sessionID);
-		}
-	} // namespace Clients
+			void User::Remove(uint64_t const sessionID)
+			{
+				clients.erase(sessionID);
+			}
+		} // namespace Clients
+	} // namespace Services
 } // namespace Peoplez

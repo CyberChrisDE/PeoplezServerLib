@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ELEMENT_H_
-#define ELEMENT_H_
+#ifndef PEOPLEZ_STRING_ELEMENT_H_
+#define PEOPLEZ_STRING_ELEMENT_H_
 
 // Local includes
 #include "PeoplezString.hpp"
@@ -103,4 +103,4 @@ namespace Peoplez
 	} // namespace String
 } // namespace Peoplez
 
-#endif // ELEMENT_H_
+#endif // PEOPLEZ_STRING_ELEMENT_H_

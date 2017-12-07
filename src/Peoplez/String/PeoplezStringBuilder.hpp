@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PEOPLEZSTRINGBUILDER_H_
-#define PEOPLEZSTRINGBUILDER_H_
+#ifndef PEOPLEZ_STRING_PEOPLEZSTRINGBUILDER_H_
+#define PEOPLEZ_STRING_PEOPLEZSTRINGBUILDER_H_
 
 // Local includes
 #include "PeoplezStringBuilderData.hpp"
@@ -132,4 +132,4 @@ namespace Peoplez
 	} // namespace String
 } // namespace Peoplez
 
-#endif // PEOPLEZSTRINGBUILDER_H_
+#endif // PEOPLEZ_STRING_PEOPLEZSTRINGBUILDER_H_

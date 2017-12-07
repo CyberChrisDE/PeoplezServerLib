@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BASEELEMENT_H_
-#define BASEELEMENT_H_
+#ifndef PEOPLEZ_STRING_BASEELEMENT_H_
+#define PEOPLEZ_STRING_BASEELEMENT_H_
 
 // Local includes
 #include "Element.hpp"
@@ -66,4 +66,4 @@ namespace Peoplez
 	} // namespace String
 } // namespace Peoplez
 
-#endif // BASEELEMENT_H_
+#endif // PEOPLEZ_STRING_BASEELEMENT_H_

@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SRC_PEOPLEZ_SYSTEM_ARGUMENTS_BOOLARGUMENT_HPP_
-#define SRC_PEOPLEZ_SYSTEM_ARGUMENTS_BOOLARGUMENT_HPP_
+#ifndef PEOPLEZ_SYSTEM_ARGUMENTS_BOOLARGUMENT_HPP_
+#define PEOPLEZ_SYSTEM_ARGUMENTS_BOOLARGUMENT_HPP_
 
 #include "Argument.hpp"
 
@@ -56,4 +56,4 @@ namespace Peoplez
 	} // namespace System
 } // namespace Peoplez
 
-#endif // SRC_PEOPLEZ_SYSTEM_ARGUMENTS_BOOLARGUMENT_HPP_
+#endif // PEOPLEZ_SYSTEM_ARGUMENTS_BOOLARGUMENT_HPP_

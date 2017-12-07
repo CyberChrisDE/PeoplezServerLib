@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef USER_H_
-#define USER_H_
+#ifndef PEOPLEZ_SERVICES_CLIENTS_USER_H_
+#define PEOPLEZ_SERVICES_CLIENTS_USER_H_
 
 // Local includes
 #include "Client.hpp"
@@ -44,51 +44,54 @@
 
 namespace Peoplez
 {
-	namespace Clients
+	namespace Services
 	{
-		class ClientProvider;
-		/**
-		 * @brief Shared Pointer for UserData
-		 * @details Container for UserData that cares of getting erased when only one instance of it is left
-		 */
-		class User final
+		namespace Clients
 		{
-		public:
-			User() {}
+			class ClientProvider;
 			/**
-			 * Recommended constructor
-			 *
-			 * @param sessionID ID of the client/session
-			 * @param client Shared pinter to the client object to link to
+			 * @brief Shared Pointer for UserData
+			 * @details Container for UserData that cares of getting erased when only one instance of it is left
 			 */
-			User(uint64_t sessionID, std::shared_ptr<Client> client);
-			~User() {}
+			class User final
+			{
+			public:
+				User() {}
+				/**
+				 * Recommended constructor
+				 *
+				 * @param sessionID ID of the client/session
+				 * @param client Shared pinter to the client object to link to
+				 */
+				User(uint64_t sessionID, std::shared_ptr<Client> client);
+				~User() {}
 
-			/**
-			 * Adds a client to the user
-			 *
-			 * @param sessionID ID of the client/session
-			 * @param client Shared pointer to the client object to link to
-			 */
-			void Add(uint64_t sessionID, std::shared_ptr<Client> client);
-			/**
-			 * Indicates whether there are clients left for this user
-			 *
-			 * @return True: No clients left; Talse: Clients left
-			 */
-			bool IsEmpty() {return clients.empty();}
-			/**
-			 * @brief Getter for the client object
-			 */
-			std::shared_ptr<Client> GetClient();
-			/**
-			 * Removes a client/session from the user
-			 */
-			void Remove(uint64_t sessionID);
-		private:
-			std::map<uint64_t, std::shared_ptr<Client> > clients;
-		};
-	} // namespace Clients
+				/**
+				 * Adds a client to the user
+				 *
+				 * @param sessionID ID of the client/session
+				 * @param client Shared pointer to the client object to link to
+				 */
+				void Add(uint64_t sessionID, std::shared_ptr<Client> client);
+				/**
+				 * Indicates whether there are clients left for this user
+				 *
+				 * @return True: No clients left; Talse: Clients left
+				 */
+				bool IsEmpty() {return clients.empty();}
+				/**
+				 * @brief Getter for the client object
+				 */
+				std::shared_ptr<Client> GetClient();
+				/**
+				 * Removes a client/session from the user
+				 */
+				void Remove(uint64_t sessionID);
+			private:
+				std::map<uint64_t, std::shared_ptr<Client> > clients;
+			};
+		} // namespace Clients
+	} // namespace Services
 } // namespace Peoplez
 
-#endif // USER_H_
+#endif // PEOPLEZ_SERVICES_CLIENTS_USER_H_

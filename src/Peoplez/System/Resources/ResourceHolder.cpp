@@ -40,7 +40,10 @@ namespace Peoplez
 {
 	using namespace String;
 
-	namespace Resources
+	namespace System
 	{
-	} // namespace Resources
+		namespace Resources
+		{
+		} // namespace Resources
+	} // namespace System
 } // namespace Peoplez

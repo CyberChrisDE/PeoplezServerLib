@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCEHOLDER_H_
-#define RESOURCEHOLDER_H_
+#ifndef PEOPLEZ_SYSTEM_RESOURCES_RESOURCEHOLDER_H_
+#define PEOPLEZ_SYSTEM_RESOURCES_RESOURCEHOLDER_H_
 
 // Local includes
 #include "../../String/PeoplezString.hpp"
@@ -48,53 +48,56 @@
 
 namespace Peoplez
 {
-	namespace Resources
+	namespace System
 	{
-		/**
-		 * @brief Container for a resource
-		 */
-		class ResourceHolder
+		namespace Resources
 		{
-		public:
-			ResourceHolder() : Name(), hash(0), lastModified(0), lastSetup(0) {}
 			/**
-			 * Recommended constructor
-			 *
-			 * @param _name Name of the resource for the resource manager
+			 * @brief Container for a resource
 			 */
-			ResourceHolder(String::PeoplezString _name) : Name(_name), hash(0), lastModified(0), lastSetup(0) {}
-			virtual ~ResourceHolder() {}
+			class ResourceHolder
+			{
+			public:
+				ResourceHolder() : Name(), hash(0), lastModified(0), lastSetup(0) {}
+				/**
+				 * Recommended constructor
+				 *
+				 * @param _name Name of the resource for the resource manager
+				 */
+				ResourceHolder(String::PeoplezString _name) : Name(_name), hash(0), lastModified(0), lastSetup(0) {}
+				virtual ~ResourceHolder() {}
 
-			/**
-			 * Getter for the resource
-			 *
-			 * @param hashValue Value of old version. If equal to current, the content will be empty. Default is 0.
-			 */
-			virtual Resource GetResource(size_t hashValue = 0) = 0;
+				/**
+				 * Getter for the resource
+				 *
+				 * @param hashValue Value of old version. If equal to current, the content will be empty. Default is 0.
+				 */
+				virtual Resource GetResource(size_t hashValue = 0) = 0;
 
-			/**
-			 * @brief Name Name of the resource for the resource handler
-			 */
-			String::PeoplezString Name;
-		protected:
-			/**
-			 * Checks whether it is needed to check for an update
-			 */
-			bool NeedsSetup() const {return lastSetup + RESOURCE_TIMEOUT <= time(0);}
-			/**
-			 * @brief Hash value of the content
-			 */
-			size_t hash;
-			/**
-			 * @brief Time at that the content was last modified
-			 */
-			time_t lastModified;
-			/**
-			 * @brief Time at that the content was updated the last time
-			 */
-			time_t lastSetup;
-		};
-	} // namespace Resources
+				/**
+				 * @brief Name Name of the resource for the resource handler
+				 */
+				String::PeoplezString Name;
+			protected:
+				/**
+				 * Checks whether it is needed to check for an update
+				 */
+				bool NeedsSetup() const {return lastSetup + RESOURCE_TIMEOUT <= time(0);}
+				/**
+				 * @brief Hash value of the content
+				 */
+				size_t hash;
+				/**
+				 * @brief Time at that the content was last modified
+				 */
+				time_t lastModified;
+				/**
+				 * @brief Time at that the content was updated the last time
+				 */
+				time_t lastSetup;
+			};
+		} // namespace Resources
+	} // namespace System
 } // namespace Peoplez
 
-#endif // RESOURCEHOLDER_H_
+#endif // PEOPLEZ_SYSTEM_RESOURCES_RESOURCEHOLDER_H_

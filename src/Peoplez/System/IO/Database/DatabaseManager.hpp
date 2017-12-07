@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DATABASEMANAGER_H_
-#define DATABASEMANAGER_H_
+#ifndef PEOPLEZ_SYSTEM_IO_DATABASE_DATABASEMANAGER_H_
+#define PEOPLEZ_SYSTEM_IO_DATABASE_DATABASEMANAGER_H_
 
 // Local includes
 #include "../../../String/PeoplezString.hpp"
@@ -52,98 +52,104 @@ using namespace sql;
 
 namespace Peoplez
 {
-	namespace Database
+	namespace System
 	{
-		class DatabaseConnectionsHolder;
-
-		/**
-		 * @brief Module for all operation depending on the database
-		 */
-		class DatabaseManager final : public General::Patterns::Factory
+		namespace IO
 		{
-		public:
-			/**
-			 * Only constructor
-			 *
-			 * Creates the driver and the connection to the database and sets the schema
-			 *
-			 * @param server Url of the server on which the mysql server runs (for example: "localhost", "example.org")
-			 * @param database The name of the database you want to connect to
-			 * @param dbUserID The name of the user for authentication
-			 * @param dbPassword The password of the user for authentication
-			 */
-			DatabaseManager(char const * server, char const * database, char const * dbUserID, char const * dbPassword) __attribute__((nonnull));
-			/**
-			 * Destructor
-			 *
-			 * Closes the connection
-			 */
-			virtual ~DatabaseManager() noexcept;
-			/**
-			 * Creates a separate connection for one more thread
-			 */
-			void InitThreadData() noexcept;
-			/**
-			 * Destroys one separate connection for a thread
-			 */
-			void CleanUpThreadData() noexcept;
-			std::unique_ptr<General::Patterns::Product> CreateProduct();
-			/**
-			 * Creates a normal statement
-			 *
-			 * Creates a normal statement. Not to use for requests including parameters! "requestMutex" must be locked while existing!
-			 *
-			 * @return Shared pointer including the statement
-			 */
-			std::shared_ptr<sql::Statement> GetStatement()
+			namespace Database
 			{
-				return std::shared_ptr<sql::Statement>(conn->createStatement());
-			}
-			/**
-			 * Creates a prepared statement
-			 *
-			 * Creates a prepared statement for use with parameters. "requestMutex" must be locked while existing!
-			 *
-			 * @return Shared pointer including the prepared statement
-			 */
-			std::shared_ptr<sql::PreparedStatement> GetPreparedStatement(SQLString command)
-			{
-				return std::shared_ptr<sql::PreparedStatement>(conn->prepareStatement(command));
-			}
+				class DatabaseConnectionsHolder;
 
-		private:
-			Driver * driver = 0;
-			Connection * conn = 0;
-		};
+				/**
+				 * @brief Module for all operation depending on the database
+				 */
+				class DatabaseManager final : public General::Patterns::Factory
+				{
+				public:
+					/**
+					 * Only constructor
+					 *
+					 * Creates the driver and the connection to the database and sets the schema
+					 *
+					 * @param server Url of the server on which the mysql server runs (for example: "localhost", "example.org")
+					 * @param database The name of the database you want to connect to
+					 * @param dbUserID The name of the user for authentication
+					 * @param dbPassword The password of the user for authentication
+					 */
+					DatabaseManager(char const * server, char const * database, char const * dbUserID, char const * dbPassword) __attribute__((nonnull));
+					/**
+					 * Destructor
+					 *
+					 * Closes the connection
+					 */
+					virtual ~DatabaseManager() noexcept;
+					/**
+					 * Creates a separate connection for one more thread
+					 */
+					void InitThreadData() noexcept;
+					/**
+					 * Destroys one separate connection for a thread
+					 */
+					void CleanUpThreadData() noexcept;
+					std::unique_ptr<General::Patterns::Product> CreateProduct();
+					/**
+					 * Creates a normal statement
+					 *
+					 * Creates a normal statement. Not to use for requests including parameters! "requestMutex" must be locked while existing!
+					 *
+					 * @return Shared pointer including the statement
+					 */
+					std::shared_ptr<sql::Statement> GetStatement()
+					{
+						return std::shared_ptr<sql::Statement>(conn->createStatement());
+					}
+					/**
+					 * Creates a prepared statement
+					 *
+					 * Creates a prepared statement for use with parameters. "requestMutex" must be locked while existing!
+					 *
+					 * @return Shared pointer including the prepared statement
+					 */
+					std::shared_ptr<sql::PreparedStatement> GetPreparedStatement(SQLString command)
+					{
+						return std::shared_ptr<sql::PreparedStatement>(conn->prepareStatement(command));
+					}
 
-		/**
-		 * @brief Ensures one more open thread independent database connection
-		 */
-		class DatabaseConnectionHolder final : public General::Patterns::Product
-		{
-		public:
-			/**
-			 * Constructor
-			 *
-			 * @param database Database to hold a connection for
-			 */
-			DatabaseConnectionHolder(DatabaseManager &database) : db(database)
-			{
-				db.InitThreadData();
-			}
+				private:
+					Driver * driver = 0;
+					Connection * conn = 0;
+				};
 
-			virtual ~DatabaseConnectionHolder()
-			{
-				db.CleanUpThreadData();
-			}
+				/**
+				 * @brief Ensures one more open thread independent database connection
+				 */
+				class DatabaseConnectionHolder final : public General::Patterns::Product
+				{
+				public:
+					/**
+					 * Constructor
+					 *
+					 * @param database Database to hold a connection for
+					 */
+					DatabaseConnectionHolder(DatabaseManager &database) : db(database)
+					{
+						db.InitThreadData();
+					}
 
-		private:
-			// Avoid copy
-			DatabaseConnectionHolder(DatabaseConnectionHolder &) = delete;
+					virtual ~DatabaseConnectionHolder()
+					{
+						db.CleanUpThreadData();
+					}
 
-			DatabaseManager &db;
-		};
-	} // namespace Database
+				private:
+					// Avoid copy
+					DatabaseConnectionHolder(DatabaseConnectionHolder &) = delete;
+
+					DatabaseManager &db;
+				};
+			} // namespace Database
+		}
+	}
 } // namespace Peoplez
 
-#endif // DATABASEMANAGER_H_
+#endif // PEOPLEZ_SYSTEM_IO_DATABASE_DATABASEMANAGER_H_

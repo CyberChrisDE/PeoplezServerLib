@@ -33,59 +33,71 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCE_H_
-#define RESOURCE_H_
+#ifndef PEOPLEZ_SYSTEM_RESOURCES_RESOURCE_H_
+#define PEOPLEZ_SYSTEM_RESOURCES_RESOURCE_H_
 
 // Local includes
 #include "../../String/PeoplezString.hpp"
 #include "../../General/Enums.hpp"
-#include "Enums.hpp"
 
 namespace Peoplez
 {
-	namespace Resources
+	namespace System
 	{
-		/**
-		 * @brief Return type of resource holders
-		 */
-		class Resource final
+		namespace Resources
 		{
-		public:
-			Resource() : Compressed(false), Hash(0), Status(RESOURCE_STATUS_NOT_MODIFIED), Type(FILE_TYPE::NONE) {}
 			/**
-			 * Recommended constructor
-			 *
-			 * @param compressed Indicates whether the content is compressed
-			 * @param content Content itself
-			 * @param status Modification status of the content
-			 * @param hash Hash value of the content
-			 * @param type Type of the content
+			 * Currentness status for a resource
 			 */
-			Resource(bool compressed, String::PeoplezString content, ResourceStatus status, size_t hash, FileType type) : Compressed(compressed), Content(content), Hash(hash), Status(status), Type(type) {}
-			virtual ~Resource() {}
+			enum ResourceStatus
+			{
+				RESOURCE_STATUS_NOT_MODIFIED,
+				RESOURCE_STATUS_UPDATED,
+				RESOURCE_STATUS_ERROR
+			};
 
 			/**
-			 * @brief Indicates whether the content is compressed
+			 * @brief Return type of resource holders
 			 */
-			bool Compressed;
-			/**
-			 * @brief Content itself
-			 */
-			String::PeoplezString Content;
-			/**
-			 * @brief Hash value of the content
-			 */
-			size_t Hash;
-			/**
-			 * @brief Modification status of the content
-			 */
-			ResourceStatus Status;
-			/**
-			 * @brief Type of the content
-			 */
-			FileType Type;
-		};
-	} // namespace Resources
+			class Resource final
+			{
+			public:
+				Resource() : Compressed(false), Hash(0), Status(RESOURCE_STATUS_NOT_MODIFIED), Type(FILE_TYPE::NONE) {}
+				/**
+				 * Recommended constructor
+				 *
+				 * @param compressed Indicates whether the content is compressed
+				 * @param content Content itself
+				 * @param status Modification status of the content
+				 * @param hash Hash value of the content
+				 * @param type Type of the content
+				 */
+				Resource(bool compressed, String::PeoplezString content, ResourceStatus status, size_t hash, FileType type) : Compressed(compressed), Content(content), Hash(hash), Status(status), Type(type) {}
+				virtual ~Resource() {}
+
+				/**
+				 * @brief Indicates whether the content is compressed
+				 */
+				bool Compressed;
+				/**
+				 * @brief Content itself
+				 */
+				String::PeoplezString Content;
+				/**
+				 * @brief Hash value of the content
+				 */
+				size_t Hash;
+				/**
+				 * @brief Modification status of the content
+				 */
+				ResourceStatus Status;
+				/**
+				 * @brief Type of the content
+				 */
+				FileType Type;
+			};
+		} // namespace Resources
+	} // namespace System
 } // namespace Peoplez
 
-#endif // RESOURCE_H_
+#endif // PEOPLEZ_SYSTEM_RESOURCES_RESOURCE_H_

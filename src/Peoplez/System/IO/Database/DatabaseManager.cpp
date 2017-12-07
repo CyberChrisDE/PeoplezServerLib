@@ -44,75 +44,82 @@ namespace Peoplez
 {
 	// Local namespaces
 	using namespace General::Patterns;
-	using namespace System::Logging;
 
-	namespace Database
+	namespace System
 	{
-		DatabaseManager::DatabaseManager(char const * const server, char const * const database, char const * const dbUserID, char const * const dbPassword)
+		using namespace Logging;
+
+		namespace IO
 		{
-			try
+			namespace Database
 			{
-				driver = sql::mysql::get_driver_instance();
+				DatabaseManager::DatabaseManager(char const * const server, char const * const database, char const * const dbUserID, char const * const dbPassword)
+				{
+					try
+					{
+						driver = sql::mysql::get_driver_instance();
 
-				conn = driver->connect(server, dbUserID, dbPassword);
-				conn->setSchema(database);
-				Logger::LogEvent("DatabaseManager initialized");
-			}
-			catch(sql::SQLException & e)
-			{
-				delete conn;
+						conn = driver->connect(server, dbUserID, dbPassword);
+						conn->setSchema(database);
+						Logger::LogEvent("DatabaseManager initialized");
+					}
+					catch(sql::SQLException & e)
+					{
+						delete conn;
 
-				throw;
-			}
-			catch(...)
-			{
-				delete conn;
+						throw;
+					}
+					catch(...)
+					{
+						delete conn;
 
-				throw;
-			}
-		}
+						throw;
+					}
+				}
 
-		DatabaseManager::~DatabaseManager() noexcept
-		{
-			try
-			{
-				delete conn;
+				DatabaseManager::~DatabaseManager() noexcept
+				{
+					try
+					{
+						delete conn;
 
-				Logger::LogEvent("DatabaseManager Stopped");
-			}
-			catch(...)
-			{
-				Logger::LogException("Error while stopping DatabaseManager", __FILE__, __LINE__);
-			}
-		}
+						Logger::LogEvent("DatabaseManager Stopped");
+					}
+					catch(...)
+					{
+						Logger::LogException("Error while stopping DatabaseManager", __FILE__, __LINE__);
+					}
+				}
 
-		void DatabaseManager::InitThreadData() noexcept
-		{
-			try
-			{
-				driver->threadInit();
-			}
-			catch (...)
-			{
-				Logger::LogException("Error in DatabaseManager::InitThreadData", __FILE__, __LINE__);
-			}
-		}
+				void DatabaseManager::InitThreadData() noexcept
+				{
+					try
+					{
+						driver->threadInit();
+					}
+					catch (...)
+					{
+						Logger::LogException("Error in DatabaseManager::InitThreadData", __FILE__, __LINE__);
+					}
+				}
 
-		void DatabaseManager::CleanUpThreadData() noexcept
-		{
-			try
-			{
-				driver->threadEnd();
-			}
-			catch(...)
-			{
-				Logger::LogException("Error in DatabaseManager::CleanUpThreadData", __FILE__, __LINE__);
-			}
-		}
+				void DatabaseManager::CleanUpThreadData() noexcept
+				{
+					try
+					{
+						driver->threadEnd();
+					}
+					catch(...)
+					{
+						Logger::LogException("Error in DatabaseManager::CleanUpThreadData", __FILE__, __LINE__);
+					}
+				}
 
-		std::unique_ptr<Product> DatabaseManager::CreateProduct()
-		{
-			return std::unique_ptr<Product>(new DatabaseConnectionHolder(*this));
-		}
-	} // namespace Database
+				std::unique_ptr<Product> DatabaseManager::CreateProduct()
+				{
+					return std::unique_ptr<Product>(new DatabaseConnectionHolder(*this));
+				}
+			} // namespace Database
+		} // namespace IO
+	} // namespace System
 } // namespace Peoplez

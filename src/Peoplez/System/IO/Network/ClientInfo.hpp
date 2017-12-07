@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PEOPLEZ_SYSTEM_IO_NETWORK_EPOLLCLIENTINFO_HPP_
-#define PEOPLEZ_SYSTEM_IO_NETWORK_EPOLLCLIENTINFO_HPP_
+#ifndef PEOPLEZ_SYSTEM_IO_NETWORK_CLIENTINFO_HPP_
+#define PEOPLEZ_SYSTEM_IO_NETWORK_CLIENTINFO_HPP_
 
 namespace Peoplez
 {
@@ -94,4 +94,4 @@ namespace Peoplez
 	} // namespace System
 } // namespace Peoplez
 
-#endif // PEOPLEZ_SYSTEM_IO_NETWORK_EPOLLCLIENTINFO_HPP_
+#endif // PEOPLEZ_SYSTEM_IO_NETWORK_CLIENTINFO_HPP_

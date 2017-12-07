@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CLIENTPROVIDER_H_
-#define CLIENTPROVIDER_H_
+#ifndef PEOPLEZ_SERVICES_CLIENTS_CLIENTPROVIDER_H_
+#define PEOPLEZ_SERVICES_CLIENTS_CLIENTPROVIDER_H_
 
 // Local includes
 #include "../../System/Timer.hpp"
@@ -55,95 +55,98 @@
 
 namespace Peoplez
 {
-	namespace Clients
+	namespace Services
 	{
-		class IClientProvider
+		namespace Clients
 		{
-		public:
-			virtual std::shared_ptr<Client> GetClient(uint64_t sessionID) {return 0;}
-			virtual ~IClientProvider() {}
-		};
-
-		/**
-		 * @brief Manages all client and user data
-		 */
-		class ClientProvider final : public IClientProvider
-		{
-		public:
-			/**
-			 * Constructor
-			 *
-			 * @param database Database object that should be used
-			 */
-			ClientProvider();
-			virtual ~ClientProvider();
+			class IClientProvider
+			{
+			public:
+				virtual std::shared_ptr<Client> GetClient(uint64_t sessionID) {return 0;}
+				virtual ~IClientProvider() {}
+			};
 
 			/**
-			 * Handler for Timer(), that checks all clients whether their sessions are timed out
+			 * @brief Manages all client and user data
 			 */
-			void TimerTimeout();
-			/**
-			 * Getter for the userID matching a specific sessionID
-			 *
-			 * @param sessionID SessionID of the user
-			 *
-			 * @return UserUD of the user with the given sessionID
-			 */
-			uint64_t GetUserID(uint64_t sessionID);
-			/**
-			 * Getter for the client with the given sessionID
-			 *
-			 * @param sessionID SessionID of the user
-			 *
-			 * @return Client with the given sessionID
-			 */
-			virtual std::shared_ptr<Client> GetClient(uint64_t sessionID);
-			/**
-			 * Adds a new client
-			 *
-			 * @param userID ID of the clients user
-			 *
-			 * @return SessionID for the client
-			 */
-			uint64_t AddClient(uint64_t userID);
-			/**
-			 * Removes the Client with the given sessionID
-			 *
-			 * @param sessionID SessionID of the client
-			 */
-			void RemoveClient(uint64_t sessionID);
-			/**
-			 * Checks whether a client with the given sessionID is logged on
-			 *
-			 * @param sessionID SessionID of the client
-			 *
-			 * @return True if such a client is logged on, false otherwise
-			 */
-			bool Contains(uint64_t sessionID);
-			/**
-			 * Checks whether a client with the given userID and sessionID is logged on
-			 *
-			 * @param sessionID SessionID of the client
-			 * @param userID ID of the user
-			 *
-			 * @return True if such a client is logged on, false otherwise
-			 */
-			bool Contains(uint64_t sessionID, uint64_t userID);
+			class ClientProvider final : public IClientProvider
+			{
+			public:
+				/**
+				 * Constructor
+				 *
+				 * @param database Database object that should be used
+				 */
+				ClientProvider();
+				virtual ~ClientProvider();
 
-		private:
-			std::shared_ptr<UserData> FetchUserData(uint64_t userID);
+				/**
+				 * Handler for Timer(), that checks all clients whether their sessions are timed out
+				 */
+				void TimerTimeout();
+				/**
+				 * Getter for the userID matching a specific sessionID
+				 *
+				 * @param sessionID SessionID of the user
+				 *
+				 * @return UserUD of the user with the given sessionID
+				 */
+				uint64_t GetUserID(uint64_t sessionID);
+				/**
+				 * Getter for the client with the given sessionID
+				 *
+				 * @param sessionID SessionID of the user
+				 *
+				 * @return Client with the given sessionID
+				 */
+				virtual std::shared_ptr<Client> GetClient(uint64_t sessionID);
+				/**
+				 * Adds a new client
+				 *
+				 * @param userID ID of the clients user
+				 *
+				 * @return SessionID for the client
+				 */
+				uint64_t AddClient(uint64_t userID);
+				/**
+				 * Removes the Client with the given sessionID
+				 *
+				 * @param sessionID SessionID of the client
+				 */
+				void RemoveClient(uint64_t sessionID);
+				/**
+				 * Checks whether a client with the given sessionID is logged on
+				 *
+				 * @param sessionID SessionID of the client
+				 *
+				 * @return True if such a client is logged on, false otherwise
+				 */
+				bool Contains(uint64_t sessionID);
+				/**
+				 * Checks whether a client with the given userID and sessionID is logged on
+				 *
+				 * @param sessionID SessionID of the client
+				 * @param userID ID of the user
+				 *
+				 * @return True if such a client is logged on, false otherwise
+				 */
+				bool Contains(uint64_t sessionID, uint64_t userID);
 
-		#ifdef UNORDERED
-			boost::unordered_map<uint64_t, std::shared_ptr<Client>> clients;
-			boost::unordered_map<uint64_t, User> users;
-		#else
-			std::map<uint64_t, std::shared_ptr<Client> > clients;
-			std::map<uint64_t, std::shared_ptr<User> > users;
-		#endif
-			boost::shared_mutex clientsMutex;
-			System::Timer timer;
-		};
-	} // namespace Clients
+			private:
+				std::shared_ptr<UserData> FetchUserData(uint64_t userID);
+
+			#ifdef UNORDERED
+				boost::unordered_map<uint64_t, std::shared_ptr<Client>> clients;
+				boost::unordered_map<uint64_t, User> users;
+			#else
+				std::map<uint64_t, std::shared_ptr<Client> > clients;
+				std::map<uint64_t, std::shared_ptr<User> > users;
+			#endif
+				boost::shared_mutex clientsMutex;
+				System::Timer timer;
+			};
+		} // namespace Clients
+	} // namespace Services
 } // namespace Peoplez
 
-#endif
+#endif // PEOPLEZ_SERVICES_CLIENTS_CLIENTPROVIDER_H_

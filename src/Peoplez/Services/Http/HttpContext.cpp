@@ -57,6 +57,7 @@ namespace Peoplez
 	// Local namespaces
 	using namespace String;
 	using namespace System::Logging;
+	using namespace General;
 
 	namespace Services
 	{
@@ -67,7 +68,6 @@ namespace Peoplez
 			const String::PeoplezString HttpContext::COMPARE_STRING_IF_NONE_MATCH = "If-None-Match"; //13
 			const String::PeoplezString HttpContext::COMPARE_STRING_CONTENT_LENGTH = "Content-Length"; //14
 			const String::PeoplezString HttpContext::COMPARE_STRING_COOKIE = "Cookie"; //6
-			//thread_local std::vector<String::PeoplezString> HttpContext::threadLocalVector;
 
 			HttpStatusCode HttpContext::HandleHeader() noexcept
 			{

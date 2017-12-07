@@ -70,14 +70,14 @@ extern "C"
 
 namespace Peoplez
 {
+	using namespace General::Patterns;
+
 	namespace System
 	{
+		using namespace Logging;
+
 		namespace IO
 		{
-			// Local namespaces
-			using namespace General::Patterns;
-			using namespace System::Logging;
-
 			namespace Network
 			{
 				enum EpollDataType

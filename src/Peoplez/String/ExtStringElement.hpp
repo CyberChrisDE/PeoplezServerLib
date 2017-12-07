@@ -35,8 +35,8 @@
 
 //VORSICHT: Klasse ist nur in PeoplezSringBuilder sicher verwendbar!!! (Sonst kann das delete fehlschlagen)
 
-#ifndef EXTSTRINGELEMENT_H_
-#define EXTSTRINGELEMENT_H_
+#ifndef PEOPLEZ_STRING_EXTSTRINGELEMENT_H_
+#define PEOPLEZ_STRING_EXTSTRINGELEMENT_H_
 
 // Local includes
 #include "Element.hpp"
@@ -69,4 +69,4 @@ namespace Peoplez
 	} // namespace String
 } // namespace Peoplez
 
-#endif // EXTSTRINGELEMENT_H_
+#endif // PEOPLEZ_STRING_EXTSTRINGELEMENT_H_

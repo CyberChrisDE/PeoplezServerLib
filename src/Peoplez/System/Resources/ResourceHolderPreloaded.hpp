@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCEHOLDERPRELOADED_H_
-#define RESOURCEHOLDERPRELOADED_H_
+#ifndef PEOPLEZ_SYSTEM_RESOURCES_RESOURCEHOLDERPRELOADED_H_
+#define PEOPLEZ_SYSTEM_RESOURCES_RESOURCEHOLDERPRELOADED_H_
 
 // Local includes
 #include "ResourceHolder.hpp"
@@ -44,48 +44,51 @@
 
 namespace Peoplez
 {
-	namespace Resources
+	namespace System
 	{
-		/**
-		 * @brief Resource holder that caches the content in memory
-		 */
-		class ResourceHolderPreloaded final : public ResourceHolder
+		namespace Resources
 		{
-		public:
 			/**
-			 * Constructor
-			 *
-			 * @param directory The relative path to the directory in that the file is
-			 * @param fileName Name of the file containing the content
+			 * @brief Resource holder that caches the content in memory
 			 */
-			ResourceHolderPreloaded(String::PeoplezString directory, String::PeoplezString fileName);
-			virtual Resource GetResource(size_t hashValue) noexcept(noexcept(Resource(false, "", RESOURCE_STATUS_ERROR, 0, FILE_TYPE::NONE)));
-			virtual ~ResourceHolderPreloaded() {}
+			class ResourceHolderPreloaded final : public ResourceHolder
+			{
+			public:
+				/**
+				 * Constructor
+				 *
+				 * @param directory The relative path to the directory in that the file is
+				 * @param fileName Name of the file containing the content
+				 */
+				ResourceHolderPreloaded(String::PeoplezString directory, String::PeoplezString fileName);
+				virtual Resource GetResource(size_t hashValue) noexcept(noexcept(Resource(false, "", RESOURCE_STATUS_ERROR, 0, FILE_TYPE::NONE)));
+				virtual ~ResourceHolderPreloaded() {}
 
-		protected:
-			void UpdateHashValue() {}
-			/**
-			 * @brief Indicates whether the content is compressed
-			 */
-			bool compressed;
-			/**
-			 * @brief The content itself
-			 */
-			String::PeoplezString content;
-			/**
-			 * @brief General mutex
-			 */
-			boost::mutex contentMutex;
-			/**
-			 * @brief Relative path of the file containing the resource content
-			 */
-			String::PeoplezString Path;
-			/**
-			 * @brief Type of the content
-			 */
-			FileType type;
-		};
-	} // namespace Resources
+			protected:
+				void UpdateHashValue() {}
+				/**
+				 * @brief Indicates whether the content is compressed
+				 */
+				bool compressed;
+				/**
+				 * @brief The content itself
+				 */
+				String::PeoplezString content;
+				/**
+				 * @brief General mutex
+				 */
+				boost::mutex contentMutex;
+				/**
+				 * @brief Relative path of the file containing the resource content
+				 */
+				String::PeoplezString Path;
+				/**
+				 * @brief Type of the content
+				 */
+				FileType type;
+			};
+		} // namespace Resources
+	}
 } // namespace Peoplez
 
-#endif // RESOURCEHOLDERPRELOADED_H_
+#endif // PEOPLEZ_SYSTEM_RESOURCES_RESOURCEHOLDERPRELOADED_H_

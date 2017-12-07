@@ -33,8 +33,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FILEOPERATIONS_H_
-#define FILEOPERATIONS_H_
+#ifndef PEOPLEZ_GENERAL_FILEOPERATIONS_H_
+#define PEOPLEZ_GENERAL_FILEOPERATIONS_H_
 
 // Local includes
 #include "Enums.hpp"
@@ -42,40 +42,43 @@
 
 namespace Peoplez
 {
-	/**
-	 * FileOperations
-	 * @brief Container for several file operations
-	 */
-	namespace FileOperations
+	namespace General
 	{
-		static const String::PeoplezString Lan2String[Language::COUNT] = {"de", "en", "fr"};
+		/**
+		 * FileOperations
+		 * @brief Container for several file operations
+		 */
+		namespace FileOperations
+		{
+			static const String::PeoplezString Lan2String[Language::COUNT] = {"de", "en", "fr"};
 
-		/**
-		 * Detects the file extension of a given file type
-		 *
-		 * @param type Type of the file
-		 *
-		 * @return Extension of the file (widthout the '.')
-		 */
-		String::PeoplezString FileTypeToFileExtension(FileType type);
-		/**
-		 * Detects the file type to a given file extension
-		 *
-		 * @param extension File extension
-		 *
-		 * @return Type of the file
-		 */
-		FileType FileExtensionToFileType(String::PeoplezString extension);
-		/**
-		 * Detects the language extension for files of a given language
-		 *
-		 * @param lang Language of the file
-		 *
-		 * @return Language extension for the language
-		 *
-		 * @note Invalid lang parameter causes undefined behavior
-		 */
-		inline String::PeoplezString const &LanguageExtension(Language lang) {return Lan2String[lang];}
-	} // namespace FileOperations
+			/**
+			 * Detects the file extension of a given file type
+			 *
+			 * @param type Type of the file
+			 *
+			 * @return Extension of the file (widthout the '.')
+			 */
+			String::PeoplezString FileTypeToFileExtension(FileType type);
+			/**
+			 * Detects the file type to a given file extension
+			 *
+			 * @param extension File extension
+			 *
+			 * @return Type of the file
+			 */
+			FileType FileExtensionToFileType(String::PeoplezString extension);
+			/**
+			 * Detects the language extension for files of a given language
+			 *
+			 * @param lang Language of the file
+			 *
+			 * @return Language extension for the language
+			 *
+			 * @note Invalid lang parameter causes undefined behavior
+			 */
+			inline String::PeoplezString const &LanguageExtension(Language lang) {return Lan2String[lang];}
+		} // namespace FileOperations
+	} // namespace General
 } // namespace Peoplez
-#endif // FILEOPERATIONS_H_
+#endif // PEOPLEZ_GENERAL_FILEOPERATIONS_H_
