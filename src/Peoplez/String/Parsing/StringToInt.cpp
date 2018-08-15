@@ -35,6 +35,7 @@
 
 // Own header
 #include "StringToInt.hpp"
+#include "../../General/Math.hpp"
 
 #include <stdexcept>
 
@@ -43,10 +44,246 @@ namespace Peoplez
 	// External namespaces
 	using namespace std;
 
+	using namespace General::Math;
+
 	namespace String
 	{
 		namespace Parsing
 		{
+			inline bool negSign(char const ** const str)
+			{
+				switch(**str)
+				{
+				case '+':
+					++(*str);
+					return false;
+				case '-':
+					++(*str);
+					return true;
+				default:
+					return false;
+				}
+			}
+
+			inline signed char charToInt(unsigned char const charVal)
+			{
+				if(charVal >= 48 && charVal <= 57) return charVal - 48;
+				else if(charVal >= 65 && charVal <= 90) return charVal - 55;
+				else if(charVal >= 97 && charVal <= 122) return charVal - 87;
+				else throw runtime_error("The string does not represent a number for the given base");
+			}
+
+#ifdef FAST_OVERFLOW_CHECKS
+			template<>
+			int16_t ToInt<int16_t>(char const * str, size_t const len, unsigned char const base) noexcept(false)
+			{
+				// Init
+				char const * const end = str + len;
+				int16_t result = 0;
+
+				// Check that base is valid
+				if(__builtin_expect(base < 2 || base > 36, false)) throw out_of_range("base must be in [2, 36]");
+
+				if(len) // If length of at least one character ...
+				{
+					// Determine sign
+					bool const negative = negSign(&str);
+
+					// Add/Sub per character
+					for(; str < end; ++str) // For every char ...
+					{
+						// Character to integer value
+						signed char numVal = charToInt(*str);
+
+						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base ");
+
+						// For negative number representation
+						if(negative) numVal = -numVal;
+
+						// Save version of: result = result * base + numVal
+						bool const overflow = __builtin_expect(mulOverflow(result, base, &result), false) || addOverflow(result, numVal, &result);
+
+						// Error on overflow
+						if(__builtin_expect(overflow, false)) throw overflow_error("The absolute number represented by the string is too large");
+					}
+				}
+
+				return result;
+			}
+
+			template<>
+			uint16_t ToInt<uint16_t>(char const * str, size_t const len, unsigned char const base) noexcept(false)
+			{
+				// Init
+				char const * const end = str + len;
+				uint16_t result = 0;
+
+				// Check that base is valid
+				if(__builtin_expect(base < 2 || base > 36, false)) throw out_of_range("base must be in [2, 36]");
+
+				if(len) // If length of at least one character ...
+				{
+					if(*str == '+') ++str;
+
+					// Add/Sub per character
+					for(; str < end; ++str) // For every char ...
+					{
+						// Character to integer value
+						unsigned char numVal = (unsigned char) charToInt(*str);
+
+						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base ");
+
+						// Save version of: result = result * base + numVal
+						bool const overflow = __builtin_expect(mulOverflow(result, base, &result), false) || addOverflow(result, numVal, &result);
+
+						// Error on overflow
+						if(__builtin_expect(overflow, false)) throw overflow_error("The absolute number represented by the string is too large");
+					}
+				}
+
+				return result;
+			}
+
+			template<>
+			int32_t ToInt<int32_t>(char const * str, size_t const len, unsigned char const base) noexcept(false)
+			{
+				// Init
+				char const * const end = str + len;
+				int32_t result = 0;
+
+				// Check that base is valid
+				if(__builtin_expect(base < 2 || base > 36, false)) throw out_of_range("base must be in [2, 36]");
+
+				if(len) // If length of at least one character ...
+				{
+					// Determine sign
+					bool const negative = negSign(&str);
+
+					// Add/Sub per character
+					for(; str < end; ++str) // For every char ...
+					{
+						// Character to integer value
+						signed char numVal = charToInt(*str);
+
+						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base ");
+
+						// For negative number representation
+						if(negative) numVal = -numVal;
+
+						// Save version of: result = result * base + numVal
+						bool const overflow = __builtin_expect(mulOverflow(result, base, &result), false) || addOverflow(result, numVal, &result);
+
+						// Error on overflow
+						if(__builtin_expect(overflow, false)) throw overflow_error("The absolute number represented by the string is too large");
+					}
+				}
+
+				return result;
+			}
+
+			template<>
+			uint32_t ToInt<uint32_t>(char const * str, size_t const len, unsigned char const base) noexcept(false)
+			{
+				// Init
+				char const * const end = str + len;
+				uint32_t result = 0;
+
+				// Check that base is valid
+				if(__builtin_expect(base < 2 || base > 36, false)) throw out_of_range("base must be in [2, 36]");
+
+				if(len) // If length of at least one character ...
+				{
+					if(*str == '+') ++str;
+
+					// Add/Sub per character
+					for(; str < end; ++str) // For every char ...
+					{
+						// Character to integer value
+						unsigned char numVal = (unsigned char) charToInt(*str);
+
+						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base ");
+
+						// Save version of: result = result * base + numVal
+						bool const overflow = __builtin_expect(mulOverflow(result, base, &result), false) || addOverflow(result, numVal, &result);
+
+						// Error on overflow
+						if(__builtin_expect(overflow, false)) throw overflow_error("The absolute number represented by the string is too large");
+					}
+				}
+
+				return result;
+			}
+
+			template<>
+			int64_t ToInt<int64_t>(char const * str, size_t len, unsigned char const base) noexcept(false)
+			{
+				// Init
+				char const * const end = str + len;
+				int64_t result = 0;
+
+				// Check that base is valid
+				if(__builtin_expect(base < 2 || base > 36, false)) throw out_of_range("base must be in [2, 36]");
+
+				if(len) // If length of at least one character ...
+				{
+					// Determine sign
+					bool const negative = negSign(&str);
+
+					// Add/Sub per character
+					for(; str < end; ++str) // For every char ...
+					{
+						// Character to integer value
+						signed char numVal = charToInt(*str);
+
+						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base ");
+
+						// For negative number representation
+						if(negative) numVal = -numVal;
+
+						// Save version of: result = result * base + numVal
+						bool const overflow = __builtin_expect(mulOverflow(result, base, &result), false) || addOverflow(result, numVal, &result);
+
+						// Error on overflow
+						if(__builtin_expect(overflow, false)) throw overflow_error("The absolute number represented by the string is too large");
+					}
+				}
+
+				return result;
+			}
+
+			template<>
+			uint64_t ToInt<uint64_t>(char const * str, size_t const len, unsigned char const base) noexcept(false)
+			{
+				// Init
+				char const * const end = str + len;
+				uint64_t result = 0;
+
+				// Check that base is valid
+				if(__builtin_expect(base < 2 || base > 36, false)) throw out_of_range("base must be in [2, 36]");
+
+				if(len) // If length of at least one character ...
+				{
+					if(*str == '+') ++str;
+
+					// Add/Sub per character
+					for(; str < end; ++str) // For every char ...
+					{
+						// Character to integer value
+						unsigned char numVal = (unsigned char) charToInt(*str);
+
+						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base ");
+
+						// Save version of: result = result * base + numVal
+						bool const overflow = __builtin_expect(mulOverflow(result, base, &result), false) || addOverflow(result, numVal, &result);
+
+						// Error on overflow
+						if(__builtin_expect(overflow, false)) throw overflow_error("The absolute number represented by the string is too large");
+					}
+				}
+
+				return result;
+			}
+#else
 			template<>
 			int16_t ToInt<int16_t>(char const * str, size_t const len, unsigned char const base) noexcept(false)
 			{
@@ -58,16 +295,7 @@ namespace Peoplez
 				if(len)
 				{
 					// Determine sign
-					switch(*str)
-					{
-					case '+':
-						++str;
-						break;
-					case '-':
-						negative = true;
-						++str;
-						break;
-					}
+					negative = negSign(&str);
 
 					// Compute absolute value
 					if(base >= 2 && base <= 36) // If base is valid ...
@@ -75,13 +303,7 @@ namespace Peoplez
 						for(; str < end; ++str) // For every char ...
 						{
 							// Init
-							char const charVal = *str;
-							uint64_t numVal = 0;
-
-							if(charVal >= 48 && charVal <= 57) numVal = charVal - 48;
-							else if(charVal >= 65 && charVal <= 90) numVal = charVal - 55;
-							else if(charVal >= 97 && charVal <= 122) numVal = charVal - 87;
-							else throw runtime_error("The string does not represent a number for the given base");
+							signed char numVal = charToInt(*str);
 
 							if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base ");
 
@@ -116,13 +338,7 @@ namespace Peoplez
 
 					for(; str < end; ++str)
 					{
-						char const charVal = *str;
-						uint32_t numVal = 0;
-
-						if(charVal >= 48 && charVal <= 57) numVal = charVal - 48;
-						else if(charVal >= 65 && charVal <= 90) numVal = charVal - 55;
-						else if(charVal >= 97 && charVal <= 122) numVal = charVal - 87;
-						else throw runtime_error("The string does not represent a number for the given base");
+						unsigned char numVal = (unsigned char) charToInt(*str);
 
 						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base");
 
@@ -145,28 +361,14 @@ namespace Peoplez
 
 				if(len)
 				{
-					switch(*str)
-					{
-					case '+':
-						++str;
-						break;
-					case '-':
-						negative = true;
-						++str;
-						break;
-					}
+					// Determine sign
+					negative = negSign(&str);
 
 					if(base >= 2 && base <= 36)
 					{
 						for(; str < end; ++str)
 						{
-							char const charVal = *str;
-							uint64_t numVal = 0;
-
-							if(charVal >= 48 && charVal <= 57) numVal = charVal - 48;
-							else if(charVal >= 65 && charVal <= 90) numVal = charVal - 55;
-							else if(charVal >= 97 && charVal <= 122) numVal = charVal - 87;
-							else throw runtime_error("The string does not represent a number for the given base");
+							signed char numVal = charToInt(*str);
 
 							if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base");
 
@@ -200,13 +402,7 @@ namespace Peoplez
 
 					for(; str < end; ++str)
 					{
-						char const charVal = *str;
-						uint64_t numVal = 0;
-
-						if(charVal >= 48 && charVal <= 57) numVal = charVal - 48;
-						else if(charVal >= 65 && charVal <= 90) numVal = charVal - 55;
-						else if(charVal >= 97 && charVal <= 122) numVal = charVal - 87;
-						else throw runtime_error("The string does not represent a number for the given base");
+						unsigned char numVal = (unsigned char) charToInt(*str);
 
 						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base");
 
@@ -232,13 +428,7 @@ namespace Peoplez
 
 					for(; str < end; ++str)
 					{
-						char const charVal = *str;
-						uint64_t numVal = 0;
-
-						if(charVal >= 48 && charVal <= 57) numVal = charVal - 48;
-						else if(charVal >= 65 && charVal <= 90) numVal = charVal - 55;
-						else if(charVal >= 97 && charVal <= 122) numVal = charVal - 87;
-						else throw runtime_error("The string does not represent a number for the given base");
+						unsigned char numVal = (unsigned char) charToInt(*str);
 
 						if(__builtin_expect(numVal >= base, false)) throw runtime_error("The string does not represent a number for the given base");
 
@@ -262,7 +452,7 @@ namespace Peoplez
 
 				if(len)
 				{
-					//check for sign
+					// Determine sign
 					switch(str[0])
 					{
 					case '-':
@@ -293,6 +483,7 @@ namespace Peoplez
 
 				return 0;
 			}
+#endif
 		} // namespace Parsing
 	} // namespace String
 } // namespace Peoplez

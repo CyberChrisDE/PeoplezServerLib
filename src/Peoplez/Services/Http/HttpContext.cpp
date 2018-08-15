@@ -454,6 +454,7 @@ namespace Peoplez
 
 									if(parts[1].BeginsWith("boundary=", 9)) request.boundary = parts[1].Substring(9);
 								}
+								//TODO: What happens otherwise?
 
 								if(request.contentType == MimeType::MULTIPART_FORM_DATA && request.boundary.IsEmpty()) request.contentType = MimeType::NONE;
 							}

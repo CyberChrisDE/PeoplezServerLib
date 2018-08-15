@@ -38,6 +38,7 @@
 
 // External includes
 #include <cstdint>
+#include <cstddef>
 
 #define CLZ_u32(x) ((x) ? __builtin_clz(x) : 32)
 #define CLZ_u64(x) ((x) ? __builtin_clzl(x) : 64)
@@ -133,6 +134,38 @@ namespace Peoplez
 			 */
 			inline size_t LeadingOnes(uint64_t val) noexcept {return LeadingZeros(val ^ 0xFFFFFFFFFFFFFFFF);}
 
+#if __GNUC__ || __clang__
+#define FAST_OVERFLOW_CHECKS
+#endif
+
+#if __GNUC__ || __clang__
+			template <typename T1, typename T2, typename T3>
+			inline bool addOverflow(T1 const a, T2 const b, T3 * const c) {return __builtin_add_overflow(a, b, c);}
+
+			template <typename T1, typename T2, typename T3>
+			inline bool subOverflow(T1 const a, T2 const b, T3 * const c) {return __builtin_sub_overflow(a, b, c);}
+
+			template <typename T1, typename T2, typename T3>
+			inline bool mulOverflow(T1 const a, T2 const b, T3 * const c) {return __builtin_mul_overflow(a, b, c);}
+#else
+			template <typename T1, typename T2, typename T3>
+			inline bool addOverflow(T1 const a, T2 const b, T3 * const c)
+			{
+				#error "Not implemented for this compiler"
+			}
+
+			template <typename T1, typename T2, typename T3>
+			inline bool subOverflow(T1 const a, T2 const b, T3 * const c)
+			{
+				#error "Not implemented for this compiler"
+			}
+
+			template <typename T1, typename T2, typename T3>
+			inline bool mulOverflow(T1 const a, T2 const b, T3 * const c)
+			{
+				#error "Not implemented for this compiler"
+			}
+#endif
 		} // namespace Math
 	} // namespace General
 } // namespace Peoplez

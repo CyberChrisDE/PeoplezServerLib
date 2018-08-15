@@ -819,8 +819,8 @@ namespace Peoplez
 			 * @brief Size of the copies counter part of the reserved memory
 			 */
 			static const size_t COPIES_SIZE;
-			static char const zeroTermination[1];
 			static uint64_t const UrlEncBitmap[2];
+			static char const zeroTermination;
 		};
 
 		/**

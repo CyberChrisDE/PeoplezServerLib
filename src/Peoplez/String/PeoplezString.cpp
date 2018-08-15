@@ -76,7 +76,7 @@ namespace Peoplez
 				0, 0, 0, 0, 0, 0, 0, 55, 55, 55, 55, 55, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 87, 87, 87, 87, 87, 87,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		char const PeoplezString::zeroTermination[1] = {'\0'};
+		char const PeoplezString::zeroTermination = '\0';
 		uint64_t const PeoplezString::UrlEncBitmap[2] = {0xFC00FFFFFFFFFFFF, 0xF8000001F8000001};
 
 		PeoplezString::PeoplezString(size_t const reservation) noexcept(false) : dataLen(0), copies((COUNTER *) NEW(reservation + COPIES_SIZE)), data(((char *)copies) + COPIES_SIZE), reservedBytes(reservation)
@@ -350,7 +350,7 @@ namespace Peoplez
 
 		PeoplezString& PeoplezString::EnsureZeroTermination() noexcept(false)
 		{
-			if(!Length() || *(data + Length() - 1) != '\0') Append(zeroTermination, 1);
+			if(!Length() || *(data + Length() - 1) != '\0') Append(&zeroTermination, 1);
 			return *this;
 		}
 
@@ -727,7 +727,7 @@ namespace Peoplez
 
 		void PeoplezString::ToLower_ASCII_NU() noexcept
 		{
-			char const * end = data + Length();
+			char const * const end = data + Length();
 
 			for(char * pos = data; pos < end; ++pos)
 			{
@@ -778,7 +778,7 @@ namespace Peoplez
 
 		void PeoplezString::ToUpper_ASCII_NU() noexcept
 		{
-			char const * end = data + Length();
+			char const * const end = data + Length();
 
 			for(char * pos = data; pos < end; ++pos)
 			{
@@ -869,12 +869,11 @@ namespace Peoplez
 
 		bool PeoplezString::EncodeHtml() noexcept(false)
 		{
-			unsigned char const *srcEnd = (unsigned char *) data + dataLen;
-			size_t targetReserved = dataLen * 6;
+			unsigned char const * const srcEnd = (unsigned char *) data + dataLen;
+			size_t const targetReserved = dataLen * 6;
 			uint64_t *const targetCopies = (uint64_t *) NEW(targetReserved + COPIES_SIZE);
 			unsigned char *const targetStart = ((unsigned char *)targetCopies) + COPIES_SIZE;
 			unsigned char *targetPos = targetStart;
-			size_t leadingOnes;
 			size_t charNum;
 			unsigned char buffer[7];
 			size_t bufferSize = 0;
@@ -882,7 +881,7 @@ namespace Peoplez
 
 			for(unsigned char *srcPos = (unsigned char *) data; srcPos < srcEnd; ++srcPos)
 			{
-				leadingOnes = General::Math::LeadingOnes(*srcPos);
+				size_t const leadingOnes = General::Math::LeadingOnes(*srcPos);
 
 				//Ermitteln der Zeichennummer
 				switch(leadingOnes)
@@ -957,7 +956,7 @@ namespace Peoplez
 		void PeoplezString::EncodeUrl() noexcept(false)
 		{
 			int escapes = 0;
-			unsigned char const *end = (unsigned char *) data + Length();
+			unsigned char const * const end = (unsigned char *) data + Length();
 
 			for(unsigned char const *start = (unsigned char *) data; start < end; ++start) if(GetUrlEncMapPos(*start)) ++escapes;
 
@@ -1097,7 +1096,7 @@ namespace Peoplez
 
 		bool PeoplezString::operator ==(char const * const rhs) const noexcept
 		{
-			size_t len = strlen(rhs);
+			size_t const len = strlen(rhs);
 			return len == Length() && !memcmp(data, rhs, len);
 		}
 
@@ -1149,7 +1148,7 @@ namespace Peoplez
 			assert(stream);
 
 			fwrite(data + offset, sizeof(char), Length() - offset, stream);
-			if(zeroTerminated) fwrite(zeroTermination, sizeof(char), 1, stream); //TODO: zeroTermination can be made a char (not an array)
+			if(zeroTerminated) fwrite(&zeroTermination, sizeof(char), 1, stream);
 		}
 
 		PeoplezString::~PeoplezString() noexcept
