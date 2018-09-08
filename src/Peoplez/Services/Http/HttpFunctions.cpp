@@ -256,6 +256,9 @@ namespace Peoplez
 					if(str.EqualTo("POST", 4)) return HttpMethods::POST;
 					else if(str.EqualTo("HEAD", 4)) return HttpMethods::HEAD;
 					break;
+				case 5:
+					if(str.EqualTo("PATCH", 5)) return HttpMethods::PATCH;
+					break;
 				case 6:
 					if(str.EqualTo("DELETE", 6)) return HttpMethods::DELETE;
 					else if(str.EqualTo("TRACE", 6)) return HttpMethods::TRACE;
@@ -269,6 +272,32 @@ namespace Peoplez
 				}
 
 				return HttpMethods::UNKNOWN;
+			}
+
+			PeoplezString HttpFunctions::ToPString(HttpMethods const method)
+			{
+				switch (method) {
+					case HttpMethods::OPTIONS:
+						return "OPTIONS";
+					case HttpMethods::GET:
+						return "GET";
+					case HttpMethods::HEAD:
+						return "HEAD";
+					case HttpMethods::POST:
+						return "POST";
+					case HttpMethods::PUT:
+						return "PUT";
+					case HttpMethods::PATCH:
+						return "PATCH";
+					case HttpMethods::DELETE:
+						return "DELETE";
+					case HttpMethods::TRACE:
+						return "TRACE";
+					case HttpMethods::CONNECT:
+						return "CONNECT";
+					default:
+						return "";
+				}
 			}
 
 	 		PeoplezString HttpFunctions::Shorten(PeoplezString text, FileBeginsWith const beginsWith)

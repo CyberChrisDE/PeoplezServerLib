@@ -64,6 +64,77 @@ namespace Peoplez
 			static char const * const HTTP_RESPONSE_CONTENT_TYPE_DEFAULT = "text/html; charset=UTF-8";
 			static size_t const HTTP_RESPONSE_CONTENT_TYPE_DEFAULT_LEN = 24;
 
+			bool isValidStatusCode(HttpStatusCode const statusCode)
+			{
+				switch(statusCode)
+				{
+				case HttpStatusCode::CONTINUE:
+				case HttpStatusCode::SWITCHING_PROTOCOL:
+				case HttpStatusCode::PROCESSING:
+				case HttpStatusCode::EARLY_HITS:
+				case HttpStatusCode::OK:
+				case HttpStatusCode::CREATED:
+				case HttpStatusCode::ACCEPTED:
+				case HttpStatusCode::NON_AUTH_INFO:
+				case HttpStatusCode::NO_CONTENT:
+				case HttpStatusCode::RESET_CONTENT:
+				case HttpStatusCode::PARTIAL_CONTENT:
+				case HttpStatusCode::MULTI_STATUS:
+				case HttpStatusCode::ALREADY_REPORTED:
+				case HttpStatusCode::IM_USED:
+				case HttpStatusCode::MULTIPLE_CHOICES:
+				case HttpStatusCode::MOVED_PERMANENTLY:
+				case HttpStatusCode::FOUND:
+				case HttpStatusCode::SEE_OTHER:
+				case HttpStatusCode::NOT_MODIFIED:
+				case HttpStatusCode::USE_PROXY:
+				case HttpStatusCode::SWITCH_PROXY:
+				case HttpStatusCode::TEMPORARY_REDICT:
+				case HttpStatusCode::PERMANENT_REDIRECT:
+				case HttpStatusCode::BAD_REQUEST:
+				case HttpStatusCode::UNAUTHORIZED:
+				case HttpStatusCode::PAYMENT_REQUIRED:
+				case HttpStatusCode::FORBIDDEN:
+				case HttpStatusCode::NOT_FOUND:
+				case HttpStatusCode::METHOD_NOT_ALLOWED:
+				case HttpStatusCode::NOT_ACCEPTABLE:
+				case HttpStatusCode::PROXY_AUTH_REQUIRED:
+				case HttpStatusCode::REQUEST_TIMEOUT:
+				case HttpStatusCode::CONFLICT:
+				case HttpStatusCode::GONE:
+				case HttpStatusCode::LENGTH_REQUIRED:
+				case HttpStatusCode::PAYLOAD_TOO_LARGE:
+				case HttpStatusCode::URI_TOO_LONG:
+				case HttpStatusCode::UNSUPPORTED_MEDIA_TYPE:
+				case HttpStatusCode::RANGE_NOT_SATISFIABLE:
+				case HttpStatusCode::EXPECTATION_FAILED:
+				case HttpStatusCode::IM_A_TEAPOT:
+				case HttpStatusCode::MISDIRECTED_REQUEST:
+				case HttpStatusCode::UNPROCESSABLE_ENTITY:
+				case HttpStatusCode::LOCKED:
+				case HttpStatusCode::FAILED_DEPENDENCY:
+				case HttpStatusCode::UPGRADE_REQUIRED:
+				case HttpStatusCode::PRECONDITION_REQUIRED:
+				case HttpStatusCode::TOO_MANY_REQUESTS:
+				case HttpStatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE:
+				case HttpStatusCode::UNAVAILABLE_FOR_LEGAL_REASONS:
+				case HttpStatusCode::INTERNAL_SERVER_ERROR:
+				case HttpStatusCode::NOT_IMPLEMENTED:
+				case HttpStatusCode::BAD_GATEWAY:
+				case HttpStatusCode::SERVICE_UNAVAILABLE:
+				case HttpStatusCode::GATEWAY_TIMEOUT:
+				case HttpStatusCode::HTTP_VERSION_NOT_SUPPORTED:
+				case HttpStatusCode::VARIANT_ALSO_NEGOTIATES:
+				case HttpStatusCode::INSUFFICIENT_STORAGE:
+				case HttpStatusCode::LOOP_DETECTED:
+				case HttpStatusCode::NOT_EXTENDED:
+				case HttpStatusCode::NETWORK_AUTH_REQUIRED:
+					return true;
+				default:
+					return false;
+				}
+			}
+
 			HttpResponse::HttpResponse() : KeepAlive(true), compression(HTTP_COMPRESSION_NONE), contentType(HTTP_RESPONSE_CONTENT_TYPE_DEFAULT, HTTP_RESPONSE_CONTENT_TYPE_DEFAULT_LEN), dataSet(false), eTag(0), statusCode(HttpStatusCode::OK)
 			{
 			}
@@ -260,25 +331,58 @@ namespace Peoplez
 			{
 				switch(statusCode)
 				{
+				case HttpStatusCode::CONTINUE:
+					return ConstStrLenContainer("Continue", 8);
+				case HttpStatusCode::SWITCHING_PROTOCOL:
+					return ConstStrLenContainer("Switching Protocols", 19);
+				case HttpStatusCode::PROCESSING:
+					return ConstStrLenContainer("Processing", 10);
+				case HttpStatusCode::EARLY_HITS:
+					return ConstStrLenContainer("Early Hits", 10);
 				case HttpStatusCode::OK:
 					return ConstStrLenContainer("OK", 2);
-					//return HTTP_STATUS_CODE_OK;
+				case HttpStatusCode::CREATED:
+					return ConstStrLenContainer("Created", 7);
+				case HttpStatusCode::ACCEPTED:
+					return ConstStrLenContainer("Accepted", 8);
+				case HttpStatusCode::NON_AUTH_INFO:
+					return ConstStrLenContainer("Non-Authoritative Information", 29);
+				case HttpStatusCode::NO_CONTENT:
+					return ConstStrLenContainer("No Content", 10);
 				case HttpStatusCode::RESET_CONTENT:
 					return ConstStrLenContainer("Reset Content", 13);
-		//		case HttpStatusCode::MULTIPLE_CHOICES:
-		//			return "Multiple Choices";
+				case HttpStatusCode::PARTIAL_CONTENT:
+					return ConstStrLenContainer("Partial Content", 15);
+				case HttpStatusCode::MULTI_STATUS:
+					return ConstStrLenContainer("Multi-Status", 12);
+				case HttpStatusCode::ALREADY_REPORTED:
+					return ConstStrLenContainer("Already Reported", 16);
+				case HttpStatusCode::IM_USED:
+					return ConstStrLenContainer("IM Used", 7);
+				case HttpStatusCode::MULTIPLE_CHOICES:
+					return ConstStrLenContainer("Multiple Choices", 16);
 				case HttpStatusCode::MOVED_PERMANENTLY:
 					return ConstStrLenContainer("Moved Permanently", 17);
+				case HttpStatusCode::FOUND:
+					return ConstStrLenContainer("Found", 5);
 				case HttpStatusCode::SEE_OTHER:
 					return ConstStrLenContainer("See Other", 9);
-					//return HTTP_STATUS_CODE_SEE_OTHER;
 				case HttpStatusCode::NOT_MODIFIED:
 					return ConstStrLenContainer("Not Modified", 12);
-					//return HTTP_STATUS_CODE_NOT_MODIFIED;
+				case HttpStatusCode::USE_PROXY:
+					return ConstStrLenContainer("Use Proxy", 9);
+				case HttpStatusCode::SWITCH_PROXY:
+					return ConstStrLenContainer("Switch Proxy", 12);
 				case HttpStatusCode::TEMPORARY_REDICT:
 					return ConstStrLenContainer("Temporary Redict", 16);
+				case HttpStatusCode::PERMANENT_REDIRECT:
+					return ConstStrLenContainer("Permanent Redirect", 18);
 				case HttpStatusCode::BAD_REQUEST:
 					return ConstStrLenContainer("Bad Request", 11);
+				case HttpStatusCode::UNAUTHORIZED:
+					return ConstStrLenContainer("Unauthorized", 12);
+				case HttpStatusCode::PAYMENT_REQUIRED:
+					return ConstStrLenContainer("Payment Required", 16);
 				case HttpStatusCode::FORBIDDEN:
 					return ConstStrLenContainer("Forbidden", 9);
 				case HttpStatusCode::NOT_FOUND:
@@ -287,6 +391,8 @@ namespace Peoplez
 					return ConstStrLenContainer("Method Not Allowed", 18);
 				case HttpStatusCode::NOT_ACCEPTABLE:
 					return ConstStrLenContainer("Not Acceptable", 14);
+				case HttpStatusCode::PROXY_AUTH_REQUIRED:
+					return ConstStrLenContainer("Proxy Authentication Required", 29);
 				case HttpStatusCode::REQUEST_TIMEOUT:
 					return ConstStrLenContainer("Request Time-out", 16);
 				case HttpStatusCode::CONFLICT:
@@ -295,28 +401,58 @@ namespace Peoplez
 					return ConstStrLenContainer("Gone", 4);
 				case HttpStatusCode::LENGTH_REQUIRED:
 					return ConstStrLenContainer("Length Required", 15);
-				case HttpStatusCode::REQUEST_ENTITY_TOO_LARGE:
-					return ConstStrLenContainer("Request Entity Too Large", 24);
-				case HttpStatusCode::REQUESTURL_TOO_LONG:
-					return ConstStrLenContainer("Request-URL Too Long", 20);
+				case HttpStatusCode::PAYLOAD_TOO_LARGE:
+					return ConstStrLenContainer("Payload Too Large", 17);
+				case HttpStatusCode::URI_TOO_LONG:
+					return ConstStrLenContainer("URI Too Long", 12);
 				case HttpStatusCode::UNSUPPORTED_MEDIA_TYPE:
 					return ConstStrLenContainer("Unsupported Media Type", 22);
-				case HttpStatusCode::THERE_ARE_TOO_MANY_CONNECTIONS_FROM_YOUR_INTERNET_ADDRESS:
-					return ConstStrLenContainer("There are too many connections for your internet address", 56);
+				case HttpStatusCode::RANGE_NOT_SATISFIABLE:
+					return ConstStrLenContainer("Range Not Satisfiable", 21);
+				case HttpStatusCode::EXPECTATION_FAILED:
+					return ConstStrLenContainer("Expectation Failed", 18);
+				case HttpStatusCode::IM_A_TEAPOT:
+					return ConstStrLenContainer("I'm a teapot", 12);
+				case HttpStatusCode::MISDIRECTED_REQUEST:
+					return ConstStrLenContainer("Misdirected Request", 19);
 				case HttpStatusCode::UNPROCESSABLE_ENTITY:
 					return ConstStrLenContainer("Unsupported Media Type", 22);
 				case HttpStatusCode::LOCKED:
 					return ConstStrLenContainer("Locked", 6);
+				case HttpStatusCode::FAILED_DEPENDENCY:
+					return ConstStrLenContainer("Failed Dependency", 17);
+				case HttpStatusCode::UPGRADE_REQUIRED:
+					return ConstStrLenContainer("Upgrade Required", 16);
+				case HttpStatusCode::PRECONDITION_REQUIRED:
+					return ConstStrLenContainer("Precondition Required", 21);
+				case HttpStatusCode::TOO_MANY_REQUESTS:
+					return ConstStrLenContainer("Too Many Requests", 17);
+				case HttpStatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE:
+					return ConstStrLenContainer("Request Header Fields Too Large", 31);
+				case HttpStatusCode::UNAVAILABLE_FOR_LEGAL_REASONS:
+					return ConstStrLenContainer("Unavailable For Legal Reasons", 29);
 				case HttpStatusCode::INTERNAL_SERVER_ERROR:
 					return ConstStrLenContainer("Internal Server Error", 21);
 				case HttpStatusCode::NOT_IMPLEMENTED:
 					return ConstStrLenContainer("Not Implemented", 15);
+				case HttpStatusCode::BAD_GATEWAY:
+					return ConstStrLenContainer("Bad Gateway", 11);
 				case HttpStatusCode::SERVICE_UNAVAILABLE:
 					return ConstStrLenContainer("Service Unavailable", 19);
+				case HttpStatusCode::GATEWAY_TIMEOUT:
+					return ConstStrLenContainer("Gateway Timeout", 15);
 				case HttpStatusCode::HTTP_VERSION_NOT_SUPPORTED:
 					return ConstStrLenContainer("HTTP Version not supported", 26);
+				case HttpStatusCode::VARIANT_ALSO_NEGOTIATES:
+					return ConstStrLenContainer("Variant Also Negotiates", 23);
+				case HttpStatusCode::INSUFFICIENT_STORAGE:
+					return ConstStrLenContainer("Insufficient Storage", 20);
+				case HttpStatusCode::LOOP_DETECTED:
+					return ConstStrLenContainer("Loop Detected", 13);
 				case HttpStatusCode::NOT_EXTENDED:
 					return ConstStrLenContainer("Not Extended", 12);
+				case HttpStatusCode::NETWORK_AUTH_REQUIRED:
+					return ConstStrLenContainer("Network Authentication Required", 31);
 				default:
 					Logger::LogException("No description for this status code available", __FILE__, __LINE__);
 					return ConstStrLenContainer(0, 0);

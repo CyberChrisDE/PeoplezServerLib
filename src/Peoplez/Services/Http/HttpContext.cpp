@@ -68,6 +68,7 @@ namespace Peoplez
 			const String::PeoplezString HttpContext::COMPARE_STRING_IF_NONE_MATCH = "If-None-Match"; //13
 			const String::PeoplezString HttpContext::COMPARE_STRING_CONTENT_LENGTH = "Content-Length"; //14
 			const String::PeoplezString HttpContext::COMPARE_STRING_COOKIE = "Cookie"; //6
+			const String::PeoplezString HttpContext::COMPARE_STRING_HOST = "Host"; // 4
 
 			HttpStatusCode HttpContext::HandleHeader() noexcept
 			{
@@ -392,14 +393,14 @@ namespace Peoplez
 
 					switch(name.Length()) //With RETURN at the end of each complete match!!!
 					{
-//					case 4:
-//						if(name == "Host")
-//						{
-//							request->userHostName = value;
-//
-//							return;
-//						}
-//						break;
+					case 4:
+						if(name == COMPARE_STRING_HOST)
+						{
+							request.host = value;
+
+							return;
+						}
+						break;
 					case 6:
 						if(name == COMPARE_STRING_COOKIE)
 						{

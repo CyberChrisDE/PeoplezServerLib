@@ -41,7 +41,6 @@
 #include "../Preprocessor/System.hpp"
 #include "../System/Alignment.hpp"
 #include "../String/Parsing/IntToString.hpp"
-#include "../String/Parsing/StringToInt.hpp"
 #include "../Preprocessor/System.hpp"
 
 // External includes
@@ -711,12 +710,12 @@ namespace Peoplez
 
 		int64_t PeoplezString::ToInt64(unsigned char const base) const noexcept(false)
 		{
-			return ToInt<int64_t>(data, Length(), base);
+			return Parsing::ToInt<int64_t>(data, Length(), base);
 		}
 
 		uint64_t PeoplezString::ToUInt64(unsigned char const base) const noexcept(false)
 		{
-			return ToInt<uint64_t>(data, Length(), base);
+			return Parsing::ToInt<uint64_t>(data, Length(), base);
 		}
 
 		void PeoplezString::ToLower() noexcept(false)

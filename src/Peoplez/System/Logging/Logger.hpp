@@ -41,6 +41,7 @@
 
 // Extern includes
 #include <boost/thread/mutex.hpp>
+#include <iostream>
 
 namespace Peoplez
 {

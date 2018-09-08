@@ -131,6 +131,7 @@ namespace Peoplez
 				 * @return Hash map with the additional request header fields
 				 */
 				inline std::vector<std::pair<String::PeoplezString, String::PeoplezString> > Headers() const {return headers;}
+				inline String::PeoplezString Host() const {return host;}
 				/**
 				 * Getter for the post parameters from the request
 				 *
@@ -172,6 +173,7 @@ namespace Peoplez
 				std::list<HttpCookie> cookies;
 				size_t eTag;
 				std::vector<std::pair<String::PeoplezString, String::PeoplezString> > headers;
+				String::PeoplezString host;
 				//bool isSecureConnection;
 				std::vector<PostParam> postParams;
 				String::PeoplezString userLanguages;

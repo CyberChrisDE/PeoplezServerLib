@@ -36,6 +36,9 @@
 #ifndef PEOPLEZ_STRING_PEOPLEZSTRING_H_
 #define PEOPLEZ_STRING_PEOPLEZSTRING_H_
 
+// Internal includes
+#include "../String/Parsing/StringToInt.hpp"
+
 // External includes
 #include <boost/unordered_map.hpp>
 #include <cstdint>
@@ -485,6 +488,7 @@ namespace Peoplez
 			 * @return Substring of length len beginning at startPos
 			 */
 			inline PeoplezString Substring(size_t const startPos, unsigned int const len) const {return PeoplezString(*this, startPos, len);}
+			template<typename T> T ToInt(unsigned char base) const {return Parsing::ToInt<T>(data, Length(), base);}
 			/**
 			 * Converts this string to an int64_t
 			 *
@@ -750,7 +754,20 @@ namespace Peoplez
 			 * @par Exception Safety
 			 *  No-throw guarantee
 			 */
-			inline char const & operator[](size_t index) const noexcept {return data[index];}
+			inline char operator[](size_t index) const noexcept {return data[index];}
+
+			/**
+			 * Array subscript operator
+			 * Attention! This method does not ensure uniqueness!
+			 *
+			 * @param index Position of character
+			 *
+			 * @return reference to char value at given index
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
+			 */
+			inline char & operator[](size_t index) noexcept {return data[index];}
 
 			/**
 			 * Parses a decimal unsigned number to a PeoplezString

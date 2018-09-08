@@ -92,6 +92,8 @@ namespace Peoplez
 				 */
 				static HttpMethods ToHttpMethod(String::PeoplezString const & str) __attribute__((pure));
 
+				static String::PeoplezString ToPString(HttpMethods const method) __attribute__((pure));
+
 			private:
 		 		/**
 		 		 * Shortens the given text

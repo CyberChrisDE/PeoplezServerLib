@@ -140,6 +140,7 @@ namespace Peoplez
 				static const String::PeoplezString COMPARE_STRING_IF_NONE_MATCH;
 				static const String::PeoplezString COMPARE_STRING_CONTENT_LENGTH;
 				static const String::PeoplezString COMPARE_STRING_COOKIE;
+				static const String::PeoplezString COMPARE_STRING_HOST;
 			};
 		} // namespace Http
 	} // namespace Services

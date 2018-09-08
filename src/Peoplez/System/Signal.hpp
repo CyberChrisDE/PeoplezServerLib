@@ -42,6 +42,7 @@
 // External includes
 #include <list>
 #include <mutex>
+#include <functional>
 
 namespace Peoplez
 {
