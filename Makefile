@@ -2,6 +2,8 @@
 CC := gcc
 CXX := g++
 LD := g++
+MC := cbmc
+#MC := ~/Downloads/cbmc-5-10-linux-64/cbmc
 
 # Compilation flags
 CXXFLAGS := -std=c++0x
@@ -34,22 +36,22 @@ all: clean_objs cpy_dirs
 release_static: CXXFLAGS += $(CPPRELEASE)
 release_static: CFLAGS += $(CPPRELEASE)
 release_static: cpy_dirs $(OBJS)
-	ar rcs $(BUILDDIR)/PeoplezServerLib.a $(OBJS)
+	ar rcs $(BUILDDIR)/libPeoplezServerLib.a $(OBJS)
 
 release_dynamic: CXXFLAGS += $(CPPRELEASE) -fPIC
 release_dynamic: CFLAGS += $(CPPRELEASE) -fPIC
 release_dynamic: cpy_dirs $(OBJS)
-	$(LD) -shared $(LDFLAGS) $(LDRELEASE) $(OBJS) $(LDLIBS) -o $(BUILDDIR)/PeoplezServerLib.so
+	$(LD) -shared $(LDFLAGS) $(LDRELEASE) $(OBJS) $(LDLIBS) -o $(BUILDDIR)/libPeoplezServerLib.so
 
 debug_static: CXXFLAGS += $(CPPDEBUG)
 debug_static: CFLAGS += $(CPPDEBUG)
 debug_static: cpy_dirs $(OBJS)
-	ar rcs $(BUILDDIR)/PeoplezServerLib.a $(OBJS)
+	ar rcs $(BUILDDIR)/libPeoplezServerLib.a $(OBJS)
 
 debug_dynamic: CXXFLAGS += $(CPPDEBUG) -fPIC
 debug_dynamic: CFLAGS += $(CPPDEBUG) -fPIC
 debug_dynamic: cpy_dirs $(OBJS)
-	$(LD) -shared $(LDFLAGS) $(LDDEBUG) $(OBJS) $(LDLIBS) -o $(BUILDDIR)/PeoplezServerLib.so
+	$(LD) -shared $(LDFLAGS) $(LDDEBUG) $(OBJS) $(LDLIBS) -o $(BUILDDIR)/libPeoplezServerLib.so
 
 cpy_dirs:
 	$(shell cd src; find -type d -exec mkdir -p "../bin/{}" \;)
@@ -58,13 +60,17 @@ cpy_dirs:
 $(BUILDDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $< -o $@
 
-#%.o: %.c
-#	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+$(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
 #	CLEAN UP
 clean: clean_objs
-	rm -f $(BUILDDIR)/PeoplezServerLib.a $(BUILDDIR)/PeoplezServerLib.so
+	rm -f $(BUILDDIR)/libPeoplezServerLib.a $(BUILDDIR)/libPeoplezServerLib.so
 	rm -rf $(BUILDDIR)/*
 
 clean_objs:
 	rm -f $(OBJS)
+
+#	Model checking tests
+mc_test:
+	$(MC) mc_tests/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/String/Parsing/IntToString.cpp --function TEST_ToCStringBase10_int32_t --bounds-check --cpp11 -D CBMC
