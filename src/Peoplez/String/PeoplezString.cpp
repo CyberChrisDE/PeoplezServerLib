@@ -49,10 +49,8 @@
 #include <cstdio>
 #include <cassert>
 
-extern "C"
-{
-	#include <mmintrin.h>
-}
+typedef unsigned char v8uc __attribute__((vector_size(8)));
+typedef char v8sc __attribute__((vector_size(8)));
 
 // External namespaces
 using namespace std;
@@ -309,18 +307,18 @@ namespace Peoplez
 			}
 			{
 				char const * const simd_end = data + Length() - 7;
-				__m64 const register simd_token = _mm_set1_pi8(token);
+				v8sc const register simd_token = {token, token, token, token, token, token, token, token};
 
 				for(; pos < simd_end; pos += 8)
 				{
 					union
 					{
 						uint64_t ui64;
-						__m64 simd64;
+						v8sc simd64;
 					} cmp;
-					__m64 const * const simd_pos = (__m64 const *) pos;
+					v8sc const * const simd_pos = (v8sc const *) pos;
 
-					cmp.simd64 = _mm_cmpeq_pi8(*simd_pos, simd_token);
+					cmp.simd64 = (*simd_pos == simd_token);
 
 					tokens += __builtin_popcountl(cmp.ui64) >> 3;
 				}
@@ -448,29 +446,24 @@ namespace Peoplez
 
 			for(unsigned int rest = min((size_t)Alignment::alignmentRest(pos, 8), Length() - offset); rest; --rest, ++pos)
 			{
-				if(*pos == (unsigned char)0x7F) return false;
+				if(*pos & (unsigned char)0x80) return false;
 			}
 			{
 				unsigned char const * const simd_end = (unsigned char const *) data + Length() - 7;
-				__m64 const register simd_token = _mm_set1_pi8((unsigned char)0x80);
+				uint64_t const simd_token = 0x8080808080808080;
 
 				for(; pos < simd_end; pos += 8)
 				{
-					union
-					{
-						uint64_t ui64;
-						__m64 simd64;
-					} cmp;
-					__m64 const * const simd_pos = (__m64 const *) pos;
+					uint64_t const * const simd_pos = (uint64_t const *) pos;
 
-					cmp.simd64 = _mm_cmpgt_pi8(*simd_pos, simd_token);
+					uint64_t const cmp = (*simd_pos & simd_token);
 
-					if(cmp.ui64 > 0) return false;
+					if(cmp > 0) return false;
 				}
 			}
 			for(unsigned char const * const end = (unsigned char const *) data + Length(); pos < end; ++pos)
 			{
-				if(*pos == (unsigned char)0x7F) return false;
+				if(*pos & (unsigned char)0x80) return false;
 			}
 
 			return true;
@@ -1142,7 +1135,7 @@ namespace Peoplez
 			return PeoplezString(outputPos, 16 + outputStart - outputPos);
 		}
 
-		void PeoplezString::Write(FILE * const __restrict__ stream, size_t const offset, bool const zeroTerminated)
+		void PeoplezString::Write(FILE * const __restrict__ stream, size_t const offset, bool const zeroTerminated) const
 		{
 			assert(stream);
 
@@ -1159,7 +1152,7 @@ namespace Peoplez
 			}
 		}
 
-		ostream& operator<<(ostream & __restrict__ os, const PeoplezString & __restrict__ dt) noexcept(false)
+		ostream& operator<<(ostream & __restrict__ os, PeoplezString const & __restrict__ dt) noexcept(false)
 		{
 			os.write(dt.GetData(), dt.Length());
 			return os;

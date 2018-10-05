@@ -64,7 +64,8 @@ namespace Peoplez
 			/**
 			 * Converts an int32 to a CString
 			 *
-			 * @param target Target CString
+			 * @param target Target CString.
+			 * This should have at least 12 bytes reserved (10 digits + sign + '\0'-termination)
 			 * @param val Source value
 			 *
 			 * @result Length of the CString (without terminating '\0'); Minimum is 1
@@ -73,7 +74,8 @@ namespace Peoplez
 			/**
 			 * Converts an uint32 to a CString
 			 *
-			 * @param target Target CString
+			 * @param target Target CString.
+			 * This should have at least 11 bytes reserved (10 digits + '\0'-termination)
 			 * @param val Source value
 			 *
 			 * @result Length of the CString (without terminating '\0'); Minimum is 1
@@ -83,6 +85,7 @@ namespace Peoplez
 			 * Converts an int64 to a CString
 			 *
 			 * @param target Target CString
+			 * This should have at least 21 bytes reserved (19 digits + sign + '\0'-termination)
 			 * @param val Source value
 			 *
 			 * @result Length of the CString (without terminating '\0'); Minimum is 1
@@ -92,6 +95,7 @@ namespace Peoplez
 			 * Converts an uint64 to a CString
 			 *
 			 * @param target Target CString
+			 * This should have at least 21 bytes reserved (20 digits + '\0'-termination)
 			 * @param val Source value
 			 *
 			 * @result Length of the CString (without terminating '\0'); Minimum is 1

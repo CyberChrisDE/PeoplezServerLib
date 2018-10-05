@@ -291,6 +291,13 @@ namespace Peoplez
 			 * @return Hash value of this string
 			 */
 			inline size_t HashValue() const noexcept {return Length() > 0 ? boost::hash_range(GetData(), GetData() + Length()) : 0;}
+			/**
+			 * Checks whether all bytes of the string have values in the range [0, 127]
+			 *
+			 * @param offset Beginning of the substring to check
+			 *
+			 * @return True if and only if all bytes have values in the range [0, 127]
+			 */
 			bool IsASCIICompatible(size_t offset) const noexcept;
 			/**
 			 * Checks whether the string is empty
@@ -793,7 +800,7 @@ namespace Peoplez
 			 * @param offset Index of first character to write
 			 * @param zeroTerminated Indicates wheter the written string should be '\0' terminated
 			 */
-			void Write(FILE * stream, size_t offset, bool zeroTerminated = false);
+			void Write(FILE * stream, size_t offset, bool zeroTerminated = false) const;
 
 			/**
 			 * @brief Value for "no position"
