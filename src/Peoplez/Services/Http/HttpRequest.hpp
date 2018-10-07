@@ -53,6 +53,47 @@ namespace Peoplez
 	{
 		namespace Http
 		{
+			enum class UriType : unsigned char
+			{
+				UNDEFINED = 0,
+				ORIGIN,
+				ABSOLUTE,
+				AUTHORITY,
+				ASTERISK
+			};
+
+			class HttpRequestUri final
+			{
+			public:
+				HttpRequestUri() : scheme(String::PeoplezString()), authorityString(scheme), pathString(scheme), queryString(scheme) {}
+				HttpRequestUri(String::PeoplezString uriString, HttpMethods httpMethod);
+
+				void Clean();
+
+				UriType type = UriType::UNDEFINED;
+				/**
+				 * Scheme of the URI (e.g. "http" or "ftp")
+				 */
+				String::PeoplezString scheme;
+				/**
+				 * Authority string (e.g. "www.example.org")
+				 */
+				String::PeoplezString authorityString;
+				/**
+				 * String of the full path (e.g. "/path/to/file.html")
+				 */
+				String::PeoplezString pathString;
+				/**
+				 * Segments of the path (e.g. ["path", "to", "file.html"])
+				 * The segments already URL-decoded
+				 */
+				std::vector<String::PeoplezString> pathSegments;
+				/**
+				 * String of the full query (e.g. "name=alice&target=bob")
+				 */
+				String::PeoplezString queryString;
+			};
+
 			/**
 			 * @brief Container for request data
 			 */
@@ -141,6 +182,13 @@ namespace Peoplez
 				 */
 				inline std::vector<PostParam> PostParams() const {return postParams;}
 				/**
+				 * Getter for the request URI (second element in first line of HTTP request)
+				 *
+				 * @return Constant reference to Uri object
+				 */
+				HttpRequestUri const & Uri() {return uri;}
+				//inline String::PeoplezString QueryString() const {return queryString;}
+				/**
 				 * Getter for the http method
 				 *
 				 * @return Type of the request http method
@@ -152,11 +200,16 @@ namespace Peoplez
 		//		 */
 		//		inline bool IsSecureConnection(){return isSecureConnection;}
 				/**
+				 * Full path specified in the first line of the Http request
+				 * Does not include the query or the anchor
+				 */
+				//inline String::PeoplezString & RequestUri() {return requestUri;}
+				/**
 				 * List of the raw url entries
 				 *
 				 * List of the raw url entries splitted at each '/'. No empty entries included. Entries are already unescaped.
 				 */
-				std::vector<String::PeoplezString> rawUrl;
+				//std::vector<String::PeoplezString> rawUrl;
 				/**
 				 * Destructor
 				 *
@@ -177,6 +230,7 @@ namespace Peoplez
 				//bool isSecureConnection;
 				std::vector<PostParam> postParams;
 				String::PeoplezString userLanguages;
+				HttpRequestUri uri;
 			};
 		} // namespace Http
 	} // namespace Services

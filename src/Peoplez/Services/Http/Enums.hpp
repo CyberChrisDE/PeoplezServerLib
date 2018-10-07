@@ -36,6 +36,8 @@
 #ifndef PEOPLEZ_SERVICES_HTTP_ENUMS_H_
 #define PEOPLEZ_SERVICES_HTTP_ENUMS_H_
 
+#include <bitset>
+
 namespace Peoplez
 {
 	namespace Services
@@ -55,18 +57,43 @@ namespace Peoplez
 			/**
 			 * @brief Http methods
 			 */
-			enum class HttpMethods
+			enum class HttpMethods : unsigned char
 			{
-				OPTIONS,
-				GET,
-				HEAD,
-				POST,
-				PUT,
-				PATCH,
-				DELETE,
-				TRACE,
-				CONNECT,
-				UNKNOWN
+				UNKNOWN = 0,
+				OPTIONS = 1,
+				GET = 2,
+				HEAD = 3,
+				POST = 4,
+				PUT = 5,
+				PATCH = 6,
+				DELETE = 7,
+				TRACE = 8,
+				CONNECT = 9,
+				MAX = 9
+			};
+
+			class HttpMethodSet
+			{
+			public:
+				HttpMethodSet(unsigned long const bitMask = 0x3E) : bits(bitMask) {}
+
+				/**
+				 * @brief Getter
+				 *
+				 * @param method HttpMethod to check
+				 *
+				 * @return true if and only if the set contains this method
+				 */
+				bool Get(HttpMethods const method) const {return bits[(unsigned)method];}
+				/**
+				 * @brief Setter
+				 *
+				 * @param method HttpMethod to set or reset
+				 * @param val Indicates whether to set (true) or reset (false)
+				 */
+				void Set(HttpMethods const method, bool const val) {bits[(unsigned)method] = val;}
+			private:
+				std::bitset<(unsigned)HttpMethods::MAX + 1> bits;
 			};
 
 			/**

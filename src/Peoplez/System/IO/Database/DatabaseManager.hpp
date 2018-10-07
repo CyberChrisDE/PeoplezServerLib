@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2018 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -41,8 +41,8 @@
 #include "../../../General/Patterns/Factory.hpp"
 
 //Extern includes
-#include <prepared_statement.h>
-#include <exception.h>
+#include <cppconn/prepared_statement.h>
+#include <cppconn/exception.h>
 #include <mysql_driver.h>
 #include <mysql_connection.h>
 #include <memory>

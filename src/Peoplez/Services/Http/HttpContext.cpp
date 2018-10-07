@@ -81,37 +81,65 @@ namespace Peoplez
 					else
 					{
 						PeoplezString firstLine(InputBuffer.Substring(0, positionEnd));
-						//Zerlegen der ersten Zeile ("Request-Line")
+						// Split the request-line
 						//std::vector<PeoplezString> &lineElements = threadLocalVector;
 						std::vector<PeoplezString> lineElements;
-						firstLine.Split<true>(lineElements, ' ');
-						//firstLine.Split(threadLocalVector, ' ', true);
+						firstLine.Split<false>(lineElements, ' '); // Uses 'false' to determine number of whitespace characters
 
-						if(lineElements.size() < 3) return HttpStatusCode::BAD_REQUEST;
+						// Interpret the three parts of the request-line as:
+						// method SP request-target SP HTTP-version CRLF
+						//
+						// Reject request-lines which have not exactly 2 whitespaces
+						// as recommended in RFC 7230 Section 3.1.1
+						if(lineElements.size() != 3) return HttpStatusCode::BAD_REQUEST;
 						else
 						{
+							// Extract Http method
 							request.httpMethod = HttpFunctions::ToHttpMethod(lineElements[0]);
-							lineElements[1].Split<true>(request.rawUrl, '/');
 
-							//Unescaping of entries
-							for(register uint64_t i = request.rawUrl.size(); i > 0; --i) request.rawUrl[i - 1].DecodeUrl();
-
-							positionStart = positionEnd + 2;
-							positionEnd = InputBuffer.FindEndOfLine(positionStart);
-							size_t seperateCharPos = 0;
-
-							while(positionEnd != PeoplezString::NPOS && positionEnd > positionStart)
+							// Check for asterisk ("*") for URI
+							if(lineElements[1].EqualTo("*", 1))
 							{
-								seperateCharPos = InputBuffer.Find(':', positionStart);
-
-								if(positionStart < seperateCharPos && seperateCharPos < positionEnd)
+								if(request.httpMethod == HttpMethods::OPTIONS)
 								{
-									InsertHeader(InputBuffer.Substring(positionStart, seperateCharPos - positionStart), InputBuffer.Substring(seperateCharPos + 1, positionEnd - seperateCharPos - 1));
+									//TODO: Send list of options to client
+									Logger::LogException("Not yet implemented", __FILE__, __LINE__);
+									exit(1);
 								}
-								else return HttpStatusCode::BAD_REQUEST;
+								else return HttpStatusCode::BAD_REQUEST; // Parsing error
+							}
+							else
+							{
+								// Remove possibly existing fragment from URI
+								{
+									size_t const fragmentBeginsAt = lineElements[1].Find('#');
+									if(fragmentBeginsAt != PeoplezString::NPOS) lineElements[1] = lineElements[1].Substring(0, fragmentBeginsAt);
+								}
 
+								// Parse remaining request URI
+								request.uri = HttpRequestUri(lineElements[1], request.httpMethod);
+
+								// Check whether request URI could be resolved/parsed
+								if(request.uri.type == UriType::UNDEFINED) return HttpStatusCode::BAD_REQUEST;
+
+								// Read headers from input buffer
 								positionStart = positionEnd + 2;
 								positionEnd = InputBuffer.FindEndOfLine(positionStart);
+								size_t seperateCharPos = 0;
+
+								while(positionEnd != PeoplezString::NPOS && positionEnd > positionStart)
+								{
+									seperateCharPos = InputBuffer.Find(':', positionStart);
+
+									if(positionStart < seperateCharPos && seperateCharPos < positionEnd)
+									{
+										InsertHeader(InputBuffer.Substring(positionStart, seperateCharPos - positionStart), InputBuffer.Substring(seperateCharPos + 1, positionEnd - seperateCharPos - 1));
+									}
+									else return HttpStatusCode::BAD_REQUEST;
+
+									positionStart = positionEnd + 2;
+									positionEnd = InputBuffer.FindEndOfLine(positionStart);
+								}
 							}
 						}
 					}

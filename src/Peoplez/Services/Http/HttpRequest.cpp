@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2018 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -48,7 +48,7 @@ namespace Peoplez
 			void HttpRequest::Clean()
 			{
 				eTag = 0;
-				rawUrl.clear();
+				//rawUrl.clear();
 				contentLength = -1;
 				cookies.clear();
 				headers.clear();
@@ -56,6 +56,7 @@ namespace Peoplez
 				postParams.clear();
 				userLanguages.Clear();
 				//preferredLanguage = (Language) -1;
+				uri.Clean();
 			}
 
 			int HttpRequest::FindBestLanguage(std::map<String::PeoplezString, int> langMap, int const def)
@@ -127,6 +128,137 @@ namespace Peoplez
 				}
 
 				return PeoplezString();
+			}
+
+			HttpRequestUri::HttpRequestUri(String::PeoplezString uriString, HttpMethods const httpMethod) :
+					scheme(uriString.Substring(0,0)), authorityString(scheme), pathString(scheme), queryString(scheme)
+			{
+				if(httpMethod == HttpMethods::CONNECT)
+				{
+					// According to RFC 7231 Section 4.3.6 only the
+					// authority-form (RFC 7230 Section 5.3.3) is allowed
+					// for method CONNECT.
+					// According to RFC 7230 Section 5.3.3 the authority-form
+					// is only used for CONNECT requests and thus only checked
+					// here. And RFC 7230 Section 5.3.3 disallows the use of
+					// the userinfo.
+
+					//TODO: No syntax check done yet
+					authorityString = uriString;
+				}
+				else if(uriString.EqualTo("*", 1))
+				{
+					// Asterisk-form (RFC 7230 Section 5.3.4) is only
+					// possible for method OPTIONS (and possibly CONNECT).
+					// If it is not allowed, type is set to UNDEFINED anyway
+					// as UNDEFINED is the default
+					if(httpMethod == HttpMethods::OPTIONS) type = UriType::ASTERISK;
+				}
+				else // Non-CONNECT and no asterik-form ...
+				{
+					// Extract query
+					{
+						size_t const posQM = uriString.Find('?');
+						if(posQM != PeoplezString::NPOS)
+						{
+							queryString = uriString.Substring(posQM + 1);
+							uriString = uriString.Substring(0, posQM);
+						}
+					}
+
+					// From now on, only the origin-form (RFC 7230 Section 5.3.1)
+					// and the absolute-form (RFC 7230 Section 5.3.2) are possible.
+					// The origin-form must begin with a '/' and the absolute-form
+					// must not.
+
+					size_t const posSlash = uriString.Find('/');
+					if(posSlash == 0) // Origin-form
+					{
+						type = UriType::ORIGIN;
+						pathString = uriString;
+						// Split the path into its segments
+						uriString.Split<true>(pathSegments, '/');
+					}
+					else // Absolute-form
+					{
+						size_t const posColon = uriString.Find(':');
+						if(posColon != PeoplezString::NPOS)
+						{
+							type = UriType::ABSOLUTE;
+							// Extract the scheme
+							scheme = uriString.Substring(0, posColon);
+							// and remove it from uriString
+							uriString = uriString.Substring(posColon + 1);
+							// Remaining uriString is the hier-part (see RFC 3986 Section 3)
+
+							if(uriString.Length() >= 2 && uriString[0] != '/' && uriString[1] != '/')
+							{
+								// uriString is: "//" authority path-abempty
+								// First find the '/' and extract the authority
+								// Then reduce uriString to path
+								size_t const posSlash = uriString.Find('/', 2);
+
+								if(posSlash == PeoplezString::NPOS)
+								{
+									authorityString = uriString.Substring(2);
+									// Path is empty
+									uriString = uriString.Substring(0,0);
+								}
+								else
+								{
+									authorityString = uriString.Substring(2, posSlash - 2);
+									uriString = uriString.Substring(posSlash + 1);
+								}
+
+								// Split path into its segments
+								pathString = uriString;
+								if(!uriString.IsEmpty()) uriString.Split<true>(pathSegments, '/');
+							}
+
+							// Remaining uriString is the path
+
+							pathString = uriString;
+							// Split the path into its segments
+							uriString.Split<true>(pathSegments, '/');
+						}
+						else
+						{
+							// Reset the query string (to empty string)
+							queryString = uriString.Substring(0,0);
+
+							// type = UNDEFINED is the default anyway
+						}
+					}
+
+					// Unescape all path segments
+					for(size_t i = 0; i < pathSegments.size(); ++i)
+					{
+						if(!pathSegments[i].DecodeUrl())
+						{
+							// If decoding fails
+							// reset all fields
+							type = UriType::UNDEFINED;
+							if(!scheme.IsEmpty()) scheme = uriString.Substring(0,0);
+							if(!authorityString.IsEmpty()) authorityString = scheme;
+							if(!pathString.IsEmpty()) pathString = scheme;
+							if(!queryString.IsEmpty()) queryString = scheme;
+							pathSegments.clear();
+
+							// Stop decoding
+							break;
+						}
+					}
+				}
+			}
+
+			void HttpRequestUri::Clean()
+			{
+				type = UriType::UNDEFINED;
+				scheme.Clear();
+				authorityString.Clear();
+				pathString.Clear();
+				pathSegments.clear();
+				queryString.Clear();
 			}
 		} // namespace Http
 	} // namespace Services
