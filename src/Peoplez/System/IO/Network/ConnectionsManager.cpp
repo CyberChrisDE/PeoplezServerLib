@@ -506,10 +506,10 @@ namespace Peoplez
 							boost::unique_lock<boost::mutex> const communicationLock(communicationMutex);
 
 							myIterator = communicationVariable;
-						}
 
-						// Inform creator about successful read
-						communicationCondition.notify_one();
+							// Inform creator about successful read
+							communicationCondition.notify_one();
+						}
 
 						// Ensure that the database holds a connection for this thread
 						std::unique_ptr<const Product> const pTData(perThreadDataFactory.CreateProduct());
