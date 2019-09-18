@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -40,7 +40,6 @@
 #include "Argument.hpp"
 
 // External includes
-#include <boost/current_function.hpp>
 #include <type_traits>
 #include <iostream>
 

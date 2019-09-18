@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -40,7 +40,7 @@
 #include "../../String/PeoplezString.hpp"
 
 // Extern includes
-#include <boost/thread.hpp>
+#include <thread>
 #include <memory>
 
 namespace Peoplez
@@ -146,7 +146,7 @@ namespace Peoplez
 				static void Close();
 			private:
 				static CommandObject tree;
-				static boost::thread th;
+				static std::thread th;
 				static int stopfd;
 			};
 		} // namespace Commandline

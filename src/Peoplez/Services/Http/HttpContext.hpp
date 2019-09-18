@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, 2018 Christian Geldermann
+ * Copyright 2017 - 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -43,7 +43,7 @@
 #include "PostParam.hpp"
 
 // Extern includes
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 
 namespace Peoplez
 {
@@ -129,7 +129,7 @@ namespace Peoplez
 				String::PeoplezString OutputBuffer;
 				HttpSocketStatus Status;
 				bool SendableCBEnabled;
-				boost::mutex mut;
+				std::mutex mut;
 				System::IO::Network::Socket * const sender;
 
 			private:

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -76,7 +76,7 @@ namespace Peoplez
 
 		PeoplezStringBuilder::PeoplezStringBuilder(PeoplezStringBuilder const & original)
 		{
-			boost::unique_lock<boost::mutex> lockOriginal(original.dataLock);
+			std::unique_lock<std::mutex> lockOriginal(original.dataLock);
 
 			data = original.data;
 		}
@@ -84,7 +84,7 @@ namespace Peoplez
 		PeoplezStringBuilderData const PeoplezStringBuilder::GetDataObject() const
 		{
 			// Lock data object
-			boost::unique_lock<boost::mutex> lock(dataLock);
+			std::unique_lock<std::mutex> lock(dataLock);
 
 			return data;
 		}
@@ -150,8 +150,8 @@ namespace Peoplez
 
 		void PeoplezStringBuilder::operator =(PeoplezStringBuilder rhs)
 		{
-			boost::unique_lock<boost::mutex> lockOwn(dataLock);
-			boost::unique_lock<boost::mutex> lockRhs(rhs.dataLock);
+			std::unique_lock<std::mutex> lockOwn(dataLock);
+			std::unique_lock<std::mutex> lockRhs(rhs.dataLock);
 
 			data = rhs.data;
 		}

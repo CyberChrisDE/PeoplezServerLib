@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -192,7 +192,7 @@ namespace Peoplez
 				{
 					char buf[INPUT_BUFFER_STEP_SIZE];
 
-					boost::unique_lock<boost::mutex> const lock(context->mut);
+					std::unique_lock<std::mutex> const lock(context->mut);
 
 					if(context->InputBuffer.IsEmpty()) firstByte = time(0);
 					else
@@ -282,7 +282,7 @@ namespace Peoplez
 //					int bytes;
 //					char buf[INPUT_BUFFER_STEP_SIZE];
 //
-//					boost::unique_lock<boost::mutex> lock(context->mut);
+//					std::unique_lock<std::mutex> lock(context->mut);
 //
 //					bytes = context->sender->Recv(buf, INPUT_BUFFER_STEP_SIZE);
 //
@@ -316,7 +316,7 @@ namespace Peoplez
 
 			void HttpClientInfo::MessageSendableCB()
 			{
-				boost::unique_lock<boost::mutex> const lock(context->mut);
+				std::unique_lock<std::mutex> const lock(context->mut);
 				SendInner();
 			}
 

@@ -6,7 +6,7 @@ MC := cbmc
 #MC := ~/Downloads/cbmc-5-10-linux-64/cbmc
 
 # Compilation flags
-CXXFLAGS := -std=c++0x
+CXXFLAGS := -std=c++1y
 CFLAGS := 
 CPPFLAGS := -Wall
 CPPDEBUG := -O0 -g3 -DDEBUG
@@ -72,5 +72,5 @@ clean_objs:
 	rm -f $(OBJS)
 
 #	Model checking tests
-mc_test:
-	$(MC) mc_tests/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/String/Parsing/IntToString.cpp --function TEST_ToCStringBase10_int32_t --bounds-check --cpp11 -D CBMC
+#mc_test:
+#	$(MC) mc_tests/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/String/Parsing/IntToString.cpp --function TEST_ToCStringBase10_int32_t --bounds-check --cpp11 -D CBMC

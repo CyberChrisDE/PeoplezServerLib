@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -189,7 +189,7 @@ namespace Peoplez
 						event.data.ptr = (void*) data;
 
 						// Lock ClientInfo lists
-						boost::unique_lock<boost::mutex> const listLock(infoListMutex);
+						std::unique_lock<std::mutex> const listLock(infoListMutex);
 
 						// Add socket to epoll buffer
 						if(epoll_ctl(clientBuffer, EPOLL_CTL_ADD, sock, &event) == -1)
@@ -250,7 +250,7 @@ namespace Peoplez
 						event.data.ptr = (void *) data;
 
 						// Lock listeners list
-						boost::unique_lock<boost::mutex> const listLock(listenerListMutex);
+						std::unique_lock<std::mutex> const listLock(listenerListMutex);
 
 						// Add socket to epoll buffer
 						if(epoll_ctl(clientBuffer, EPOLL_CTL_ADD, sock, &event) == -1)
@@ -286,13 +286,13 @@ namespace Peoplez
 					try
 					{
 						//Lock worker thread list and shared thread variable
-						boost::unique_lock<boost::mutex> const listLock(workerThreadListMutex);
-						boost::unique_lock<boost::mutex> communicationLock(communicationMutex);
+						std::unique_lock<std::mutex> const listLock(workerThreadListMutex);
+						std::unique_lock<std::mutex> communicationLock(communicationMutex);
 
 						for(; n; --n)
 						{
 							//Add thread to worker thread list
-							workerThreadList.push_back(boost::thread(&ConnectionsManager::ThreadPoolFunction, this));
+							workerThreadList.push_back(std::thread(&ConnectionsManager::ThreadPoolFunction, this));
 
 							//Inform worker thread about its iterator
 							communicationVariable = --workerThreadList.end();
@@ -309,7 +309,7 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> const listLock(infoListMutex);
+						std::unique_lock<std::mutex> const listLock(infoListMutex);
 
 						//while(oldInfos != 0) DestroyInner(oldInfos);
 						//while(newInfos != 0) DestroyInner(newInfos);
@@ -326,7 +326,7 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> const listLock(listenerListMutex);
+						std::unique_lock<std::mutex> const listLock(listenerListMutex);
 
 						while(listeners != 0) RemoveInner(listeners->listener->GetSocketID(), listeners);
 					}
@@ -340,7 +340,7 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> const listLock(infoListMutex);
+						std::unique_lock<std::mutex> const listLock(infoListMutex);
 
 						while(oldInfos != 0) RemoveInner(oldInfos->clientInfo->fd, oldInfos);
 
@@ -360,7 +360,7 @@ namespace Peoplez
 
 				void ConnectionsManager::Remove(int const fd, EpollData const * const d) noexcept
 				{
-					boost::unique_lock<boost::mutex> const listLock(infoListMutex);
+					std::unique_lock<std::mutex> const listLock(infoListMutex);
 
 					RemoveInner(fd, d);
 				}
@@ -434,8 +434,8 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> const listLock(workerThreadListMutex);
-						boost::unique_lock<boost::mutex> communicationLock(communicationMutex);
+						std::unique_lock<std::mutex> const listLock(workerThreadListMutex);
+						std::unique_lock<std::mutex> communicationLock(communicationMutex);
 
 						for(n = std::min(n, workerThreadList.size()); n; --n)
 						{
@@ -499,11 +499,11 @@ namespace Peoplez
 #ifndef DIRECT_TIMEOUT
 						bool deleteOldEntriesEnabled = false;
 #endif
-						std::list<boost::thread>::iterator myIterator;
+						std::list<std::thread>::iterator myIterator;
 
 						// Fetch worker threads own iterator for identification
 						{
-							boost::unique_lock<boost::mutex> const communicationLock(communicationMutex);
+							std::unique_lock<std::mutex> const communicationLock(communicationMutex);
 
 							myIterator = communicationVariable;
 
@@ -536,7 +536,7 @@ namespace Peoplez
 								/// EPOLL CRITICAL SECTION ///
 								{
 									// Ensure that only one thread can manipulate epoll data at once
-									boost::unique_lock<boost::mutex> const lock(epollMutex);
+									std::unique_lock<std::mutex> const lock(epollMutex);
 
 									// Wait for epoll events
 									int const eventsLen = epoll_wait(clientBuffer, events, MAXEVENTS, -1);
@@ -550,7 +550,7 @@ namespace Peoplez
 										if(data == 0) // If event received ...
 										{
 											// Acquire unique communication channel
-											boost::unique_lock<boost::mutex> const communicationLock(communicationMutex);
+											std::unique_lock<std::mutex> const communicationLock(communicationMutex);
 
 											// Read from event socket
 											eventfd_t val = 0;
@@ -673,7 +673,7 @@ namespace Peoplez
 
 				void ConnectionsManager::ToNew(EpollData * const d)
 				{
-					boost::unique_lock<boost::mutex> const listLock(infoListMutex);
+					std::unique_lock<std::mutex> const listLock(infoListMutex);
 
 					if(d->before != 0)
 					{

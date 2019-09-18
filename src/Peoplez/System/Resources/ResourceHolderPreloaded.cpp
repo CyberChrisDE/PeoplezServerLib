@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -71,7 +71,7 @@ namespace Peoplez
 			{
 				try
 				{
-					boost::unique_lock<boost::mutex> lock(contentMutex);
+					std::unique_lock<std::mutex> lock(contentMutex);
 
 					if(NeedsSetup())
 					{

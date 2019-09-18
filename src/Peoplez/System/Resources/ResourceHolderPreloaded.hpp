@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -40,7 +40,7 @@
 #include "ResourceHolder.hpp"
 
 // Extern includes
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 
 namespace Peoplez
 {
@@ -77,7 +77,7 @@ namespace Peoplez
 				/**
 				 * @brief General mutex
 				 */
-				boost::mutex contentMutex;
+				std::mutex contentMutex;
 				/**
 				 * @brief Relative path of the file containing the resource content
 				 */

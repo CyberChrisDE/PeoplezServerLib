@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -63,7 +63,7 @@ namespace Peoplez
 		namespace Commandline
 		{
 			CommandManager::CommandObject CommandManager::tree;
-			boost::thread CommandManager::th;
+			std::thread CommandManager::th;
 			int CommandManager::stopfd = eventfd(0, EFD_NONBLOCK);
 
 			void CommandManager::Initialize()
@@ -112,7 +112,7 @@ namespace Peoplez
 					}
 					*/
 
-					th = boost::thread(Read);
+					th = std::thread(Read);
 
 					Logger::LogEvent("CommandManager initialized");
 				}
@@ -151,9 +151,6 @@ namespace Peoplez
 
 						if(FD_ISSET(stopfd, &set)) break;
 					}
-				}
-				catch (boost::thread_interrupted&)
-				{
 				}
 				catch(...)
 				{

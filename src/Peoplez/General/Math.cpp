@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -37,7 +37,7 @@
 #include "Math.hpp"
 #include <ctime>
 #include <cstdlib>
-#include <boost/thread/once.hpp>
+#include <mutex>
 
 namespace Peoplez
 {
@@ -47,8 +47,8 @@ namespace Peoplez
 		{
 			uint64_t Rnd64()
 			{
-				static boost::once_flag flag = BOOST_ONCE_INIT;
-				boost::call_once([]{srand(time(0));}, flag);
+				static std::once_flag flag;
+				std::call_once(flag, []{srand(time(0));});
 			#if RAND_MAX == INT_MAX
 				return (((rand() << 16) | (rand() & 0xffff)) << 16) | (rand() & 0xffff);
 			#elif RAND_MAX == 65535

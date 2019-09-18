@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -40,7 +40,7 @@
 #include "PeoplezStringBuilderData.hpp"
 
 // Extern includes
-#include <boost/thread/shared_mutex.hpp>
+#include <mutex>
 
 namespace Peoplez
 {
@@ -100,7 +100,7 @@ namespace Peoplez
 			void Create(PeoplezString text);
 
 			PeoplezStringBuilderData data;
-			mutable boost::mutex dataLock;
+			mutable std::mutex dataLock;
 		};
 
 		struct NON_ENSURE_UNIQUE {};

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, 2018 Christian Geldermann
+ * Copyright 2017 - 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -40,7 +40,7 @@
 #include "../../String/PeoplezString.hpp"
 
 // Extern includes
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <iostream>
 
 namespace Peoplez
@@ -77,7 +77,7 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> const lock(console_lock);
+						std::unique_lock<std::mutex> const lock(console_lock);
 						std::cout << "Log:\t" << text << std::endl;
 					}
 					catch(...) {}
@@ -95,7 +95,7 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> const lock(console_lock);
+						std::unique_lock<std::mutex> const lock(console_lock);
 						std::cout << "Log:\t" << text << std::endl;
 					}
 					catch(...) {}
@@ -115,7 +115,7 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> const lock(console_lock);
+						std::unique_lock<std::mutex> const lock(console_lock);
 						if(line > 0) std::cout << "Exception:\t" << text << "(" << file << ":" << line << ")" << std::endl;
 						else std::cout << "Exception:\t" << text << std::endl;
 					}
@@ -136,7 +136,7 @@ namespace Peoplez
 				{
 					try
 					{
-						boost::unique_lock<boost::mutex> lock(console_lock);
+						std::unique_lock<std::mutex> lock(console_lock);
 						if(line > 0) std::cout << "Exception:\t" << text << "(" << file << ":" << line << ")" << std::endl;
 						else std::cout << "Exception:\t" << text << std::endl;
 					}
@@ -148,7 +148,7 @@ namespace Peoplez
 				/**
 				 * @brief Mutex for prevent writing with several threads at the same time
 				 */
-				static boost::mutex console_lock;
+				static std::mutex console_lock;
 			};
 		} // namespace Logging
 	} // namespace System

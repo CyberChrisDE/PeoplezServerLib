@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -43,7 +43,8 @@
 #include "ClientInfo.hpp"
 
 // Extern includes
-#include <boost/thread.hpp>
+#include <thread>
+#include <list>
 
 namespace Peoplez
 {
@@ -139,21 +140,21 @@ namespace Peoplez
 					 * @brief epoll file descriptor
 					 */
 					int const clientBuffer;
-					boost::mutex epollMutex;
+					std::mutex epollMutex;
 					int const eventSock;
-					boost::mutex infoListMutex;
-					boost::mutex listenerListMutex;
+					std::mutex infoListMutex;
+					std::mutex listenerListMutex;
 					EpollData * listeners;
 					EpollData * newInfos;
 					EpollData * oldInfos;
-					std::list<boost::thread>::iterator communicationVariable;
-					boost::mutex communicationMutex;
-					boost::condition_variable communicationCondition;
+					std::list<std::thread>::iterator communicationVariable;
+					std::mutex communicationMutex;
+					std::condition_variable communicationCondition;
 					//General::TimerMember<ConnectionsManager> timer;
 					General::Patterns::Factory &perThreadDataFactory;
 					System::Timer const timer;
-					std::list<boost::thread> workerThreadList;
-					boost::mutex workerThreadListMutex;
+					std::list<std::thread> workerThreadList;
+					std::mutex workerThreadListMutex;
 
 					static const uint32_t EPOLL_ERROR_OR_DELETE;
 				};

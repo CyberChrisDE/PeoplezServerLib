@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -51,7 +51,8 @@
 #include <map>
 #endif
 
-#include <boost/thread/shared_mutex.hpp>
+//#include <boost/thread/shared_mutex.hpp>
+#include <shared_mutex>
 
 namespace Peoplez
 {
@@ -142,7 +143,7 @@ namespace Peoplez
 				std::map<uint64_t, std::shared_ptr<Client> > clients;
 				std::map<uint64_t, std::shared_ptr<User> > users;
 			#endif
-				boost::shared_mutex clientsMutex;
+				std::shared_timed_mutex clientsMutex;
 				System::Timer timer;
 			};
 		} // namespace Clients

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -42,6 +42,7 @@
 
 // Extern includes
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <mutex>
 
 namespace Peoplez
 {
@@ -82,7 +83,7 @@ namespace Peoplez
 			private:
 				String::PeoplezString directory;
 				boost::ptr_vector<ResourceHolder> resources;
-				boost::mutex resourceMutex;
+				std::mutex resourceMutex;
 			};
 		} // namespace Resources
 	} // namespace System

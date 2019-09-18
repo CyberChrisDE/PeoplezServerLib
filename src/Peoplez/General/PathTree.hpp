@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -40,7 +40,10 @@
 #include "../String/PeoplezString.hpp"
 
 // External includes
-#include <boost/thread.hpp>
+//#include <boost/thread.hpp>
+#include <thread>
+#include <shared_mutex>
+#include <mutex>
 #include <memory>
 #include <unordered_map>
 
@@ -187,7 +190,7 @@ namespace Peoplez
 			template<typename I>
 			std::shared_ptr<T> GetTarget(I iter, I end)
 			{
-				boost::shared_lock<boost::shared_mutex> lock(mut);
+				std::shared_lock<std::shared_timed_mutex> lock(mut);
 
 				return child.GetTarget(iter, end);
 			}
@@ -201,7 +204,7 @@ namespace Peoplez
 			template<typename I>
 			void InsertTarget(I iter, I end, std::shared_ptr<T> target)
 			{
-				boost::unique_lock<boost::shared_mutex> lock(mut);
+				std::unique_lock<std::shared_timed_mutex> lock(mut);
 
 				child.InsertTarget(iter, end, target);
 			}
@@ -212,7 +215,7 @@ namespace Peoplez
 			 */
 			bool IsEmpty() noexcept
 			{
-				boost::shared_lock<boost::shared_mutex> lock(mut);
+				std::shared_lock<std::shared_timed_mutex> lock(mut);
 
 				return child.IsEmpty();
 			}
@@ -225,13 +228,13 @@ namespace Peoplez
 			template<typename I>
 			void RemoveTarget(I iter, I end)
 			{
-				boost::unique_lock<boost::shared_mutex> lock(mut);
+				std::unique_lock<std::shared_timed_mutex> lock(mut);
 
 				child.RemoveTarget(iter, end);
 			}
 
 		private:
-			boost::shared_mutex mut;
+			std::shared_timed_mutex mut;
 			Node child;
 		};
 

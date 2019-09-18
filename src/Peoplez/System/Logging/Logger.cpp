@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -42,7 +42,7 @@ namespace Peoplez
 	{
 		namespace Logging
 		{
-			boost::mutex Logger::console_lock;
+			std::mutex Logger::console_lock;
 		} // namespace Logging
 	} // namespace System
 } // namespace Peoplez
