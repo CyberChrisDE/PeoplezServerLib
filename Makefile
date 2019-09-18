@@ -14,7 +14,7 @@ CPPRELEASE := -O3 -DNDEBUG
 
 # Linker options
 LDFLAGS := 
-LDLIBS := -lpthread -lcrypto -lssl -lz -lboost_thread -lboost_system -lmysqlcppconn
+LDLIBS := -lpthread -lcrypto -lssl -lz -lboost_system -lmysqlcppconn
 LDDEBUG := -O0 -g3
 LDRELEASE := -O3
 
