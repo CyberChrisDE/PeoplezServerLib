@@ -731,7 +731,7 @@ namespace Peoplez
 			 *
 			 * @return Reference to this string
 			 */
-			PeoplezString & operator <<=(size_t rhs) noexcept {rhs = std::min(rhs, Length()); data += rhs; return *this;}
+			PeoplezString & operator <<=(size_t rhs) noexcept {rhs = std::min(rhs, Length()); data += rhs; dataLen -= rhs; return *this;}
 			/**
 			 * Cuts rhs bytes from the end of this string
 			 * Does not cut more than Length() bytes
