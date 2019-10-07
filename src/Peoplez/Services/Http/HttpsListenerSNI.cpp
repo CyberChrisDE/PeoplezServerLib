@@ -106,7 +106,7 @@ namespace Peoplez
 				return SSL_TLSEXT_ERR_OK;
 			}
 
-			void HttpsListenerSNI::Construct(uint16_t port, HttpRequestHandler & rH, std::vector<HttpsCertificate> certs)
+			void HttpsListenerSNI::Construct(uint16_t port, std::vector<HttpsCertificate> certs)
 			{
 				//TODO Mögliche Fehler im Logger ausgeben
 				//TODO Behandeln: cb == NULL
@@ -200,12 +200,12 @@ namespace Peoplez
 
 			HttpsListenerSNI::HttpsListenerSNI(uint16_t const port, HttpRequestHandler & rH, std::vector<HttpsCertificate> const certs, size_t (*cb)(std::vector<HttpsCertificate> const &certs, char const * hostName), void * cbData) : requestHandler(rH), data(certs, cb, cbData)
 			{
-				Construct(port, rH, certs);
+				Construct(port, certs);
 			}
 
 			HttpsListenerSNI::HttpsListenerSNI(uint16_t port, HttpRequestHandler & rH, std::vector<HttpsCertificate> certs, std::vector<DomainToCert> domains) : requestHandler(rH), data(domains)
 			{
-				Construct(port, rH, certs);
+				Construct(port, certs);
 			}
 
 			HttpsListenerSNI::~HttpsListenerSNI()

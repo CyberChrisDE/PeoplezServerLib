@@ -349,7 +349,7 @@ namespace Peoplez
 
 	 		int HttpFunctions::ShortenHtml(char * * const text, char * const end)
 	 		{
-	 			register char *pos = *text;
+	 			char *pos = *text;
 	 			int erased = 0;
 
 	 			bool spaceBefore = false;

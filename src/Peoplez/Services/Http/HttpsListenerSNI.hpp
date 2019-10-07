@@ -115,7 +115,7 @@ namespace Peoplez
 
 			private:
 				static int ServerNameCB(SSL * ssl, int * a, void * content);
-				void Construct(uint16_t port, HttpRequestHandler & rH, std::vector<HttpsCertificate> certs);
+				void Construct(uint16_t port, std::vector<HttpsCertificate> certs);
 
 			private:
 				HttpRequestHandler & requestHandler;

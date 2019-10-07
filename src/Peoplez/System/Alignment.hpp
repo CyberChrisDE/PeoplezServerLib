@@ -44,7 +44,8 @@ namespace Peoplez
 		{
 			inline unsigned int alignmentRest(void const * pointer, unsigned int byte_count) noexcept
 			{
-				return (byte_count - (uintptr_t)pointer) % byte_count;
+				//return (byte_count - (uintptr_t)pointer) % byte_count;
+				return byte_count - ((uintptr_t)pointer % byte_count);
 			}
 		}  // namespace Alignment
 	} // namespace System

@@ -56,11 +56,6 @@ namespace Peoplez
 			{
 			public:
 				/**
-				 * Initializes the Logger
-				 */
-				static void Initialize() noexcept {}
-
-				/**
 				 * Cleans up the Logger
 				 */
 				static void Stop() noexcept {}

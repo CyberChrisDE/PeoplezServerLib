@@ -10,13 +10,13 @@ CXXFLAGS := -std=c++1y
 CFLAGS := 
 CPPFLAGS := -Wall
 CPPDEBUG := -O0 -g3 -DDEBUG
-CPPRELEASE := -O3 -DNDEBUG
+CPPRELEASE := -O2 -DNDEBUG
 
 # Linker options
 LDFLAGS := 
 LDLIBS := -lpthread -lcrypto -lssl -lz -lboost_system -lmysqlcppconn
 LDDEBUG := -O0 -g3
-LDRELEASE := -O3
+LDRELEASE := -O2
 
 # Source/Target folder
 SOURCEDIR := src
