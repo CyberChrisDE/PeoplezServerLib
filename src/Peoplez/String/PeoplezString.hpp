@@ -169,6 +169,9 @@ namespace Peoplez
 			 * @param other The string that this should begin with
 			 *
 			 * @return True: this string begins with other; False: otherwise
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			inline bool BeginsWith(PeoplezString const & other) const noexcept {return BeginsWith(other.data, other.Length());}
 			/**
@@ -178,10 +181,16 @@ namespace Peoplez
 			 * @param len Length of the char array other
 			 *
 			 * @return True: this string begins with the char array; False: otherwise
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool BeginsWith(char const * other, size_t len) const noexcept __attribute__((pure));
 			/**
 			 * Ensures that the string is empty
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			void Clear() noexcept;
 			/**
@@ -190,6 +199,9 @@ namespace Peoplez
 			 * @param other Other string to compare with
 			 *
 			 * @return <0: other < this; 0: equal; >0: other > this
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			int Compare(PeoplezString const &other) const noexcept __attribute__((pure));
 			/**
@@ -205,6 +217,9 @@ namespace Peoplez
 			 * @param offset Position to begin searching
 			 *
 			 * @return Number of occurrences of the token
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			size_t Count(char token, size_t offset = 0) const noexcept __attribute__((pure));
 			size_t Count2(char token, size_t offset = 0) const noexcept __attribute__((pure));
@@ -223,6 +238,9 @@ namespace Peoplez
 			 * @param str The other string to compare with
 			 *
 			 * @return True: Equal; False: Not equal
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool EqualTo(size_t pos, size_t len, const PeoplezString &str) const noexcept __attribute__((pure));
 			/**
@@ -233,6 +251,9 @@ namespace Peoplez
 			 * @param len Number of characters to be compared
 			 *
 			 * @return True: Equal; False: Not equal
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool EqualTo(size_t pos, char const * other, size_t len) const noexcept __attribute__((pure));
 			/**
@@ -240,6 +261,9 @@ namespace Peoplez
 			 *
 			 * @param other The char array to compare with
 			 * @param len Number of characters to be compared
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool EqualTo(char const * other, size_t len) const noexcept __attribute__((nonnull, pure));
 			/**
@@ -249,6 +273,9 @@ namespace Peoplez
 			 * @param pos Start position where to begin to search
 			 *
 			 * @return index of the first occurrance of the character; NPOS if not found
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			size_t Find(char c, size_t pos = 0) const noexcept __attribute__((pure));
 			/**
@@ -257,6 +284,9 @@ namespace Peoplez
 			 * @param c Character to search for
 			 *
 			 * @return index of the last occurrance of the character; NPOS if not found
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			size_t FindLast(char c) const noexcept __attribute__((pure));
 			/**
@@ -265,6 +295,9 @@ namespace Peoplez
 			 * @param startPos The position of the first character of the substring to search in
 			 *
 			 * @return Position of the first character of the double line break or NPOS if not found. (For "123\r\n\r\n89" the return value would be 3 + startPos)
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			size_t FindDoubleNewLine(size_t startPos = 0) const noexcept __attribute__((pure));
 			/**
@@ -273,6 +306,9 @@ namespace Peoplez
 			 * @param startPos Beginning of the text to search in (Beginning of the text part, not of the whole text)
 			 *
 			 * @return Position of the "\r\n" sequence (For "123\r\n6789": 3 + startPos)
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			size_t FindEndOfLine(size_t startPos = 0) const noexcept __attribute__((pure));
 			//size_t FindNonSpace(size_t start = 0, size_t end = Length()) const;
@@ -289,6 +325,9 @@ namespace Peoplez
 			 * Calculates a hash value of this string
 			 *
 			 * @return Hash value of this string
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			inline size_t HashValue() const noexcept {return Length() > 0 ? boost::hash_range(GetData(), GetData() + Length()) : 0;}
 			/**
@@ -297,6 +336,9 @@ namespace Peoplez
 			 * @param offset Beginning of the substring to check
 			 *
 			 * @return True if and only if all bytes have values in the range [0, 127]
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool IsASCIICompatible(size_t offset) const noexcept;
 			/**
@@ -312,6 +354,9 @@ namespace Peoplez
 			 * Checks whether this string is already url encoded
 			 *
 			 * @return True: Already url encoded; False: Not yet completely url encoded
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool IsUrlEncoded() const noexcept __attribute__((pure));
 			/**
@@ -481,8 +526,11 @@ namespace Peoplez
 			 * @param startPos Position of the first character to be copied
 			 *
 			 * @return Substring from startPos to end
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
-			inline PeoplezString Substring(size_t const startPos) const {return PeoplezString(*this, startPos, Length() - startPos);}
+			inline PeoplezString Substring(size_t const startPos) const noexcept {return PeoplezString(*this, startPos, Length() - startPos);}
 			/**
 			 * Creates a substring
 			 *
@@ -493,8 +541,11 @@ namespace Peoplez
 			 * @param len Number of characters to be copied
 			 *
 			 * @return Substring of length len beginning at startPos
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
-			inline PeoplezString Substring(size_t const startPos, unsigned int const len) const {return PeoplezString(*this, startPos, len);}
+			inline PeoplezString Substring(size_t const startPos, unsigned int const len) const noexcept {return PeoplezString(*this, startPos, len);}
 			template<typename T> T ToInt(unsigned char base) const {return Parsing::ToInt<T>(data, Length(), base);}
 			/**
 			 * Converts this string to an int64_t
@@ -527,6 +578,9 @@ namespace Peoplez
 			 * That is also the fact for const copies and copies in other threads!
 			 * This effect can be useful for splitted strings where no use case is left for the original string.
 			 * In such cases the substrings can be modified using ..._NU() methods for better performance.
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			void ToLower_ASCII_NU() noexcept;
 			/**
@@ -562,18 +616,27 @@ namespace Peoplez
 			 * That is also the fact for const copies and copies in other threads!
 			 * This effect can be useful for splitting strings where no use case is left for the original string.
 			 * In such cases the substring can be modified using ..._NU() methods for better performance.
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			void ToUpper_ASCII_NU() noexcept;
 			/**
 			 * Removes space characters from beginning and end of string
 			 *
 			 * The data of the string don't get changed, only the start and end pointers get relocated
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			void Trim() noexcept;
 			/**
 			 * Removes all characters <= ' ' (32; 0x20) from beginning and end of string
 			 *
 			 * The data of the string don't get changed, only the start and end pointers get relocated
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			void TrimFast() noexcept;
 			/**
@@ -613,6 +676,9 @@ namespace Peoplez
 			 * @param rhs Original PeoplezString object
 			 *
 			 * @return Reference to this object
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			PeoplezString & operator =(PeoplezString const & rhs) noexcept;
 			/**
@@ -621,6 +687,9 @@ namespace Peoplez
 			 * @param rhs Original PeoplezString object
 			 *
 			 * @return Reference to this object
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			PeoplezString & operator =(PeoplezString && rhs) noexcept;
 			/**
@@ -677,6 +746,9 @@ namespace Peoplez
 			 * @param rhs String to compare with
 			 *
 			 * @return True if equal, false otherwise
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool operator ==(PeoplezString const & rhs) const noexcept __attribute__((pure));
 			/**
@@ -685,6 +757,9 @@ namespace Peoplez
 			 * @param rhs CString to compare with
 			 *
 			 * @return True if equal, false otherwise
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool operator ==(char const * rhs) const noexcept __attribute__((pure));
 			/**
@@ -693,6 +768,9 @@ namespace Peoplez
 			 * @param rhs String to compare with
 			 *
 			 * @return False if equal, true otherwise
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool operator !=(PeoplezString const & rhs) const noexcept __attribute__((pure));
 			/**
@@ -703,6 +781,9 @@ namespace Peoplez
 			 * @param rhs String to compare with
 			 *
 			 * @return True: First different character in this string has a smaller value than in the other string; False: Otherwise or binary mode
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool operator <(PeoplezString const & rhs) const noexcept __attribute__((pure));
 			/**
@@ -730,6 +811,9 @@ namespace Peoplez
 			 * @param rhs Number of bytes to cut from the front
 			 *
 			 * @return Reference to this string
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			PeoplezString & operator <<=(size_t rhs) noexcept {rhs = std::min(rhs, Length()); data += rhs; dataLen -= rhs; return *this;}
 			/**
@@ -739,6 +823,9 @@ namespace Peoplez
 			 * @param rhs Number of bytes to cut from the end
 			 *
 			 * @return Reference to this string
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			PeoplezString & operator >>=(size_t rhs) noexcept {rhs = std::min(rhs, Length()); dataLen -= rhs; return *this;}
 			/**
@@ -749,6 +836,9 @@ namespace Peoplez
 			 * @param rhs String to compare with
 			 *
 			 * @return True: First different character in this string has a higher value than in the other string; False: Otherwise or binary mode
+			 *
+			 * @par Exception Safety
+			 *  No-throw guarantee
 			 */
 			bool operator >(PeoplezString const & rhs) const noexcept __attribute__((pure));
 			/**
@@ -762,7 +852,6 @@ namespace Peoplez
 			 *  No-throw guarantee
 			 */
 			inline char operator[](size_t index) const noexcept {return data[index];}
-
 			/**
 			 * Array subscript operator
 			 * Attention! This method does not ensure uniqueness!
@@ -775,7 +864,6 @@ namespace Peoplez
 			 *  No-throw guarantee
 			 */
 			inline char & operator[](size_t index) noexcept {return data[index];}
-
 			/**
 			 * Parses a decimal unsigned number to a PeoplezString
 			 *

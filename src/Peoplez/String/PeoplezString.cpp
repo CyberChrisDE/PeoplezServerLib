@@ -849,6 +849,7 @@ namespace Peoplez
 						++sourcePos;
 						*targetPos |= (*sourcePos) - HEX2DEC[*sourcePos];
 					}
+					else if(*sourcePos == '+') *targetPos = ' ';
 					else *targetPos = *sourcePos;
 
 					++targetPos;
@@ -961,6 +962,7 @@ namespace Peoplez
 
 				for(unsigned char const *start = (unsigned char *) data; start < end; ++start)
 				{
+					if(*start == ' ') *toPos++ = '+';
 					if(GetUrlEncMapPos(*start))
 					{
 						*toPos++ = '%';
