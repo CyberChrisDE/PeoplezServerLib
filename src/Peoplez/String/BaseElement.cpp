@@ -46,12 +46,12 @@ namespace Peoplez
 			if(next != 0) next->Create(src, tar);
 		}
 
-		BaseElement* BaseElement::DeepCopy() noexcept(std::is_nothrow_copy_constructible<PeoplezString>::value)
+		BaseElement* BaseElement::DeepCopy() const noexcept(std::is_nothrow_copy_constructible<PeoplezString>::value)
 		{
 			return new BaseElement(value, next->DeepCopy());
 		}
 
-		int BaseElement::Length(const PeoplezString *src) noexcept(noexcept(src->Length()))
+		int BaseElement::Length(const PeoplezString *src) const noexcept(noexcept(src->Length()))
 		{
 			if(!next) return value.Length();
 			else return next->Length(src) + value.Length();

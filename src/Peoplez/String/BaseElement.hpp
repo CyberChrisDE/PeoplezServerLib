@@ -56,8 +56,8 @@ namespace Peoplez
 			BaseElement(PeoplezString val) noexcept(std::is_nothrow_copy_constructible<PeoplezString>::value) : Element(), value(val) {}
 			virtual ~BaseElement() noexcept(noexcept(std::is_nothrow_destructible<PeoplezString>::value)) {}
 			void Create(const PeoplezString *src, PeoplezString *tar);
-			virtual BaseElement* DeepCopy() noexcept(std::is_nothrow_copy_constructible<PeoplezString>::value);
-			virtual int Length(const PeoplezString *src) noexcept(noexcept(src->Length()));
+			virtual BaseElement* DeepCopy() const noexcept(std::is_nothrow_copy_constructible<PeoplezString>::value);
+			virtual int Length(const PeoplezString *src) const noexcept(noexcept(src->Length()));
 
 		private:
 			BaseElement(PeoplezString val, Element* _next) noexcept : Element(_next), value(val) {}

@@ -78,14 +78,14 @@ namespace Peoplez
 			 * @brief Creates a deep copy of the list beginning at this object
 			 * @return Deep copied list
 			 */
-			virtual Element* DeepCopy() noexcept(std::is_nothrow_copy_constructible<PeoplezString>::value) = 0;
+			virtual Element* DeepCopy() const noexcept(std::is_nothrow_copy_constructible<PeoplezString>::value) = 0;
 			/**
 			 * @brief Calculates the length of the target text
 			 * @details Calculates the length of the target text by recursively calling the Length functions of the childs and adding their result to the own text length.
 			 * @param src Array of values the text is created of
 			 * @return Length of the resulting target text
 			 */
-			virtual int Length(const PeoplezString *src) noexcept(noexcept(src->Length())) = 0;
+			virtual int Length(const PeoplezString *src) const noexcept(noexcept(src->Length())) = 0;
 			virtual ~Element() noexcept(noexcept(std::is_nothrow_destructible<PeoplezString>::value)) {Dispose();}
 
 		protected:

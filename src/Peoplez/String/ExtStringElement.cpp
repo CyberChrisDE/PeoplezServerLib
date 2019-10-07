@@ -46,12 +46,12 @@ namespace Peoplez
 			if(next != 0) next->Create(src, tar);
 		}
 
-		ExtStringElement* ExtStringElement::DeepCopy() noexcept
+		ExtStringElement* ExtStringElement::DeepCopy() const noexcept
 		{
 			return new ExtStringElement(pos, next->DeepCopy());
 		}
 
-		int ExtStringElement::Length(const PeoplezString *src) noexcept(noexcept(src->Length()))
+		int ExtStringElement::Length(const PeoplezString *src) const noexcept(noexcept(src->Length()))
 		{
 			if(!next) return src[pos].Length();
 			else return src[pos].Length() + next->Length(src);

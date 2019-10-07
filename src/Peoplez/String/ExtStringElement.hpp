@@ -59,8 +59,8 @@ namespace Peoplez
 			virtual ~ExtStringElement() noexcept {}
 
 			void Create(const PeoplezString *src, PeoplezString *tar);
-			virtual ExtStringElement* DeepCopy() noexcept;
-			virtual int Length(const PeoplezString *src) noexcept(noexcept(src->Length()));
+			virtual ExtStringElement* DeepCopy() const noexcept;
+			virtual int Length(const PeoplezString *src) const noexcept(noexcept(src->Length()));
 
 		private:
 			ExtStringElement(const int position, Element* _next) noexcept : Element(_next), pos(position) {}
