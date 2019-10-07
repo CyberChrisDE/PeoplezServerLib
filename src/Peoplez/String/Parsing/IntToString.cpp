@@ -51,22 +51,27 @@ namespace Peoplez
 				char * const begin = target;
 				int64_t val = val_;
 
+				// Check sign
 				if(val < 0)
 				{
 					*target++ = '-';
 					val *= -1;
 				}
 
+				// Decode decimal degits (in reverse order)
 				do
 				{
 					*target++ = '0' + val % 10;
 					val /= 10;
 				}while(val);
 
+				// Reverse order of decimal digits to correct order
 				std::reverse(val_ < 0 ? begin + 1 : begin, target);
 
+				// Add '\0'-termination
 				*target = '\0';
 
+				// Return length of string
 				return target - begin;
 			}
 
@@ -75,16 +80,20 @@ namespace Peoplez
 			{
 				char * const begin = target;
 
+				// Decode decimal digits (in reverse order)
 				do
 				{
 					*target++ = '0' + val % 10;
 					val /= 10;
 				}while(val);
 
+				// Reverse order of digits to correct order
 				std::reverse(begin, target);
 
+				// Add '\0'-termination
 				*target = '\0';
 
+				// Return length of string
 				return target - begin;
 			}
 
@@ -94,6 +103,7 @@ namespace Peoplez
 				char * const begin = target;
 				bool neg = false;
 
+				// Check sign
 				if(val_ < 0)
 				{
 					*target++ = '-';
@@ -101,6 +111,7 @@ namespace Peoplez
 					neg = true;
 				}
 
+				// Decode decimal digits (in reverse order)
 				uint64_t val = val_;
 
 				do
@@ -109,10 +120,13 @@ namespace Peoplez
 					val /= 10;
 				}while(val);
 
+				// Reverse order of decimal digits to correct order
 				std::reverse(neg ? begin + 1 : begin, target);
 
+				// Add '\0'-termination
 				*target = '\0';
 
+				// Return length of string
 				return target - begin;
 			}
 
@@ -121,16 +135,20 @@ namespace Peoplez
 			{
 				char * const begin = target;
 
+				// Decode decimal digits (in reverse order)
 				do
 				{
 					*target++ = '0' + val % 10;
 					val /= 10;
 				}while(val);
 
+				// Reverse order of digits to correct order
 				std::reverse(begin, target);
 
+				// Add '\0'-termination
 				*target = '\0';
 
+				// Return length of string
 				return target - begin;
 			}
 		} // namespace Parsing
