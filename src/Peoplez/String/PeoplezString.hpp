@@ -221,9 +221,7 @@ namespace Peoplez
 			 * @par Exception Safety
 			 *  No-throw guarantee
 			 */
-			size_t Count(char token, size_t offset = 0) const noexcept __attribute__((pure));
-			size_t Count2(char token, size_t offset = 0) const noexcept __attribute__((pure));
-			size_t Count3(char token, size_t offset = 0) const noexcept __attribute__((pure));
+			size_t Count(char token, size_t offset = 0) const noexcept __attribute__((pure)) {return std::count(data + offset, data + Length(), token);}
 			/**
 			 * Ensures that the sting has a terminating '\0'
 			 *

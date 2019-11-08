@@ -248,103 +248,6 @@ namespace Peoplez
 			Reset((char *)newCopies, stepSize - strm.avail_out, bufSize);
 		}
 
-		size_t PeoplezString::Count2(char const token, size_t const offset) const noexcept
-		{
-			size_t tokens = 0;
-			char const * pos = data + offset;
-			char const * end = data + Length();
-
-			for(unsigned int rest = min((size_t)Alignment::alignmentRest(pos, 4), Length() - offset); rest; --rest, ++pos) if(*pos == token) ++tokens;
-			for(unsigned int rest = min((POINTER_INT)Alignment::alignmentRest(pos, 16), end - pos) >> 2; rest; --rest, pos += 4)
-			{
-				if(*pos == token) ++tokens;
-				if(*(pos + 1) == token) ++tokens;
-				if(*(pos + 2) == token) ++tokens;
-				if(*(pos + 3) == token) ++tokens;
-			}
-			for(; pos < end - 15; pos += 16)
-			{
-				if(*pos == token) ++tokens;
-				if(*(pos + 1) == token) ++tokens;
-				if(*(pos + 2) == token) ++tokens;
-				if(*(pos + 3) == token) ++tokens;
-				if(*(pos + 4) == token) ++tokens;
-				if(*(pos + 5) == token) ++tokens;
-				if(*(pos + 6) == token) ++tokens;
-				if(*(pos + 7) == token) ++tokens;
-				if(*(pos + 8) == token) ++tokens;
-				if(*(pos + 9) == token) ++tokens;
-				if(*(pos + 10) == token) ++tokens;
-				if(*(pos + 11) == token) ++tokens;
-				if(*(pos + 12) == token) ++tokens;
-				if(*(pos + 13) == token) ++tokens;
-				if(*(pos + 14) == token) ++tokens;
-				if(*(pos + 15) == token) ++tokens;
-			}
-			for(; pos < end - 3; pos += 4)
-			{
-				if(*pos == token) ++tokens;
-				if(*(pos + 1) == token) ++tokens;
-				if(*(pos + 2) == token) ++tokens;
-				if(*(pos + 3) == token) ++tokens;
-			}
-			for(; pos < end; ++pos) if(*pos == token) ++tokens;
-
-			return tokens;
-		}
-
-#pragma GCC push_options
-#pragma GCC optimize ("O2")
-		size_t PeoplezString::Count(char const token, size_t const offset) const noexcept
-		{
-			register char const * pos = data + offset;
-			size_t register tokens = 0;
-
-			for(unsigned int rest = min((size_t)Alignment::alignmentRest(pos, 8), Length() - offset); rest; --rest, ++pos)
-			{
-				// true can be assumed to be equal to 1 (according to c++ standard)
-				tokens += (*pos == token);
-			}
-			{
-				char const * const simd_end = data + Length() - 7;
-				v8sc const register simd_token = {token, token, token, token, token, token, token, token};
-
-				for(; pos < simd_end; pos += 8)
-				{
-					union
-					{
-						uint64_t ui64;
-						v8sc simd64;
-					} cmp;
-					v8sc const * const simd_pos = (v8sc const *) pos;
-
-					cmp.simd64 = (*simd_pos == simd_token);
-
-					tokens += __builtin_popcountl(cmp.ui64) >> 3;
-				}
-			}
-			for(char const * const end = data + Length(); pos < end; ++pos)
-			{
-				tokens += (*pos == token);
-			}
-
-			return tokens;
-		}
-#pragma GCC pop_options
-
-		size_t PeoplezString::Count3(char const token, size_t const offset) const noexcept
-		{
-			char const * pos = data + offset;
-			size_t tokens = 0;
-
-			for(char const * const end = data + Length(); pos < end; ++pos)
-			{
-				if(*pos == token) ++tokens;
-			}
-
-			return tokens;
-		}
-
 		PeoplezString& PeoplezString::EnsureZeroTermination() noexcept(false)
 		{
 			if(!Length() || *(data + Length() - 1) != '\0') Append(&zeroTermination, 1);
@@ -438,8 +341,6 @@ namespace Peoplez
 		}
 		*/
 
-#pragma GCC push_options
-#pragma GCC optimize ("O2")
 		bool PeoplezString::IsASCIICompatible(size_t const offset) const noexcept
 		{
 			register unsigned char const * pos = (unsigned char *) data + offset;
@@ -468,7 +369,6 @@ namespace Peoplez
 
 			return true;
 		}
-#pragma GCC pop_options
 
 		bool PeoplezString::IsUrlEncoded() const noexcept
 		{
