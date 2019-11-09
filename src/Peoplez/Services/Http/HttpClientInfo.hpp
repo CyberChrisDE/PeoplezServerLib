@@ -66,18 +66,15 @@ namespace Peoplez
 				 * @param sender Socket for communication with client/browser
 				 *
 				 * @par Exception safety
-				 *  No-throw guarantee
 				 */
 				HttpClientInfo(int fileDescriptor, HttpRequestHandler & requestHandler, System::IO::Network::Socket * sender);
-				//HttpClientInfo(const HttpClientInfo& other) noexcept;
 				virtual ClientInfo *Copy() {return new HttpClientInfo(*this);}
 				virtual void MessageReceivableCB();
-				//virtual void MessageReceivableCB2();
 				virtual void MessageSendableCB();
-				//bool IsSecureConnection();
 				virtual ~HttpClientInfo() {}
 
 			private:
+				void DataReceived(size_t bytesReceived);
 				void BodyReceived();
 				void HeaderReceived(size_t size);
 				/**

@@ -73,12 +73,6 @@ namespace Peoplez
 			{
 			}
 
-			/*
-			HttpClientInfo::HttpClientInfo(const HttpClientInfo& other) noexcept : ClientInfo(other), pageMgr(other.pageMgr), context(other.context)
-			{
-			}
-			*/
-
 			void HttpClientInfo::BodyReceived()
 			{
 				try
@@ -104,6 +98,65 @@ namespace Peoplez
 				{
 					Logger::LogException("Error in HttpClientInfo::BodyReceived", __FILE__, __LINE__);
 				}
+			}
+
+			void HttpClientInfo::DataReceived(uint64_t bytesReceived)
+			{
+				size_t startPos = context->InputBuffer.Length() - bytesReceived;
+				// If waiting for end of header ...
+				// Else if waiting for end of body ...
+				// Else if not waiting for input ...
+				// Else log error
+				if(context->Status == HTTP_SOCKET_STATUS_RECEIVE_HEADER)
+				{
+					// Search for end of header
+					size_t const dlPos = context->InputBuffer.FindDoubleNewLine(startPos > 4 ? startPos - 4 : 0);
+
+					// If end of header was found ...
+					// Else if request is too long ...
+					if(dlPos != String::PeoplezString::NPOS)
+					{
+						// Read headers
+						HeaderReceived(dlPos);
+					}
+					else if(context->InputBuffer.Length() > MAX_HEADER_LENGTH)
+					{
+						// Log it
+						Logger::LogEvent("Request too long");
+
+						// Set error response
+						context->response.SetOther(HttpStatusCode::REQUEST_ENTITY_TOO_LARGE);
+
+						// And initiate disconnect
+						context->response.KeepAlive = false;
+
+						// Send answer (error)
+						context->OutputBuffer = context->response.GetResponseText();
+						SwitchToSend();
+					}
+				}
+				else if(context->Status == HTTP_SOCKET_STATUS_RECEIVE_BODY)
+				{
+					// Debug log of bytes received
+					Logger::LogEvent(PeoplezString::ParseDec(context->InputBuffer.Length()) + " von " + PeoplezString::ParseDec(context->request.ContentLength()));
+
+					// Check whether body is completely received
+					if(context->request.ContentLength() <= context->InputBuffer.Length())
+					{
+						// Debug log
+						Logger::LogEvent("BodyReceived");
+
+						// Handle body
+						BodyReceived();
+					}
+				}
+				else if(context->Status == HTTP_SOCKET_STATUS_SEND)
+				{
+					//context->Status = HTTP_SOCKET_STATUS_RECEIVE_HEADER;
+					//Logger::LogException("Received in send mode", __FILE__, __LINE__);
+					//TODO Attacker could send huge amounts of data here
+				}
+				else Logger::LogException("Received in unknown mode", __FILE__, __LINE__);
 			}
 
 			void HttpClientInfo::HeaderReceived(size_t const size)
@@ -190,19 +243,29 @@ namespace Peoplez
 
 				try
 				{
+					// Reserve memory for receiving
 					char buf[INPUT_BUFFER_STEP_SIZE];
 
+					// Lock the context while receiving
 					std::unique_lock<std::mutex> const lock(context->mut);
 
+					// If no bytes received so far ...
 					if(context->InputBuffer.IsEmpty()) firstByte = time(0);
 					else
 					{
+						// Prevent Slow Loris attacks
 						uint64_t const diffTime = time(0) - firstByte;
 						uint64_t const minData = (8192 * (diffTime ? diffTime - 1 : 0));
 
 						if(__builtin_expect(context->InputBuffer.Length() < minData, false))
 						{
+							// Set error response
 							context->response.SetOther(HttpStatusCode::REQUEST_TIMEOUT);
+
+							// And initiate disconnect
+							context->response.KeepAlive = false;
+
+							// Send answer (error)
 							context->OutputBuffer = context->response.GetResponseText();
 							SwitchToSend();
 						}
@@ -210,56 +273,33 @@ namespace Peoplez
 
 					for(unsigned int i = (MAX_HEADER_LENGTH + MAX_BODY_LENGTH)/INPUT_BUFFER_STEP_SIZE; i > 0 && context->sender->IsOpen(); --i)
 					{
+						// Receive next chunk of data
 						int const bytes = context->sender->Recv(buf, INPUT_BUFFER_STEP_SIZE);
 
-						if(bytes > 0)
+						if(bytes > 0) // If sth. received ...
 						{
-							size_t startPos = context->InputBuffer.Length();
+							// Append received chunk to input buffer
 							context->InputBuffer.Append(buf, bytes);
 
-							if(context->Status == HTTP_SOCKET_STATUS_SEND)
-							{
-								context->Status = HTTP_SOCKET_STATUS_RECEIVE_HEADER;
-								Logger::LogException("Received in send mode", __FILE__, __LINE__);
-							}
-
-							if(context->Status == HTTP_SOCKET_STATUS_RECEIVE_HEADER)
-							{
-								size_t const dlPos = context->InputBuffer.FindDoubleNewLine(startPos > 4 ? startPos - 4 : 0);
-								if(dlPos != String::PeoplezString::NPOS) HeaderReceived(dlPos);
-								else if(context->InputBuffer.Length() > MAX_HEADER_LENGTH)
-								{
-									Logger::LogEvent("Request too long");
-									context->response.SetOther(HttpStatusCode::REQUEST_ENTITY_TOO_LARGE);
-									context->response.KeepAlive = false;
-									context->OutputBuffer = context->response.GetResponseText();
-									SwitchToSend();
-								}
-							}
-							else if(context->Status == HTTP_SOCKET_STATUS_RECEIVE_BODY)
-							{
-								Logger::LogEvent(PeoplezString::ParseDec(context->InputBuffer.Length()) + " von " + PeoplezString::ParseDec(context->request.ContentLength()));
-								//if(context->request.ContentLength() <= (size_t)bytes + context->InputBuffer.Length()) BodyReceived();
-								if(context->request.ContentLength() <= context->InputBuffer.Length())
-								{
-									Logger::LogEvent("BodyReceived");
-									BodyReceived();
-								}
-							}
-							else Logger::LogException("Received in unknown mode", __FILE__, __LINE__);
+							// Handle received data
+							DataReceived(bytes);
 						}
-						else if(bytes < 0)
+						else if(bytes < 0) // On error ...
 						{
+							// Log error (if not EAGAIN)
 							if(errno != EAGAIN)
 							{
 								Logger::LogException("Error while reading http request", __FILE__, __LINE__);
 								Logger::LogException(strerror(errno), __FILE__, __LINE__);
 							}
+
+							// Stop receiving
 							break;
 						}
 #ifdef SHOW_RB_EMPTY
 						else
 						{
+							// Log the fact that no bytes were received
 							Logger::LogEvent("Read buffer empty");
 							break;
 						}
@@ -273,47 +313,6 @@ namespace Peoplez
 				}
 			}
 
-//			void HttpClientInfo::MessageReceivableCB2()
-//			{
-//				if(__builtin_expect(fd < 0, false)) return;
-//
-//				try
-//				{
-//					int bytes;
-//					char buf[INPUT_BUFFER_STEP_SIZE];
-//
-//					std::unique_lock<std::mutex> lock(context->mut);
-//
-//					bytes = context->sender->Recv(buf, INPUT_BUFFER_STEP_SIZE);
-//
-//					if(bytes > 0)
-//					{
-//						context->InputBuffer.Append(buf, bytes);
-//
-//
-//					}
-//					else if(bytes < 0)
-//					{
-//						if(errno != EAGAIN)
-//						{
-//							Logger::LogException("Error while reading http request", __FILE__, __LINE__);
-//							Logger::LogException(strerror(errno), __FILE__, __LINE__);
-//						}
-//						//break;
-//					}
-//					else
-//					{
-//						Logger::LogEvent("Read buffer empty");
-//						//break;
-//					}
-//				}
-//				catch(...)
-//				{
-//					//context->response.SetOther(INTERNAL_SERVER_ERROR);
-//					Logger::LogException("Error in HttpClientInfo::MessageReceiveCB", __FILE__, __LINE__);
-//				}
-//			}
-
 			void HttpClientInfo::MessageSendableCB()
 			{
 				std::unique_lock<std::mutex> const lock(context->mut);
@@ -324,22 +323,31 @@ namespace Peoplez
 			{
 				try
 				{
+					// If output buffer is empty ... return
 					if(!context->OutputBuffer.Length()) return;
 
+					// Send remaining content in output buffer
 					int const sent = context->sender->Send(context->OutputBuffer.GetData(), context->OutputBuffer.Length());
 
+					// If an error occured while sending ...
+					//   Log an error
+					// Else if everything could be sent ...
+					// Else ...
+					//   Remove sent content from output buffer
 					if(__builtin_expect(sent < 0, false)) Logger::LogEvent("Error while writing");
 					else if((size_t) sent >= context->OutputBuffer.Length())
 					{
+						// Backup keep alive flag
 						bool const keepAlive = context->response.KeepAlive;
 
+						// Clean up http context and switch to receive header mode
 						context->Reset();
 						context->Status = HTTP_SOCKET_STATUS_RECEIVE_HEADER;
 
-						if(!keepAlive)
-						{
-							context->sender->Close();
-						}
+						// If not keep alive ...
+						// 	 Close socket
+						if(!keepAlive) context->sender->Close();
+						else DataReceived(context->InputBuffer.Length());
 					}
 					else context->OutputBuffer <<= sent;
 				}
@@ -353,18 +361,7 @@ namespace Peoplez
 			{
 				context->Status = HTTP_SOCKET_STATUS_SEND;
 				SendInner();
-
-//				if(context->Status == HTTP_SOCKET_STATUS_SEND)
-//				{
-//					Modify(true, true);
-//					context->SendableCBEnabled = true;
-//				}
 			}
-
-//			bool HttpClientInfo::IsSecureConnection()
-//			{
-//				return secureConnection;
-//			}
 		} // namespace Http
 	} // namespace Services
 } // namespace Peoplez
