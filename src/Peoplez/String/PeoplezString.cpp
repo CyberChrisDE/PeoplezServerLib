@@ -374,7 +374,7 @@ namespace Peoplez
 		{
 			unsigned char const *end = (unsigned char *) data + dataLen - 1;
 
-			for(unsigned char const *start = (unsigned char *) data; start < end; ++start) if(*start != 37 && (*start < 48 || (*start > 57 && *start < 65) || (*start > 90 && *start < 97) || *start > 122)) return false;
+			for(unsigned char const *start = (unsigned char *) data; start < end; ++start) if(*start != '%' && (*start < '0' || (*start > '9' && *start < 'A') || (*start > 'Z' && *start < 'a') || *start > 'z')) return false;
 
 			return true;
 		}
