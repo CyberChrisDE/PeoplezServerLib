@@ -41,8 +41,6 @@
 #include "../../System/Logging/Logger.hpp"
 
 // External includes
-//#include <boost/thread/locks.hpp>
-//#include <boost/thread.hpp>
 #include <thread>
 
 /**
@@ -157,17 +155,6 @@ namespace Peoplez
 					uint64_t sessionID = General::Math::Rnd64();
 					while(!sessionID || clients.find(sessionID) != clients.end()) sessionID = General::Math::Rnd64();
 
-			#ifdef UNORDERED
-					boost::unordered_map<uint64_t, User>::iterator us = users.find(userID);
-					if(us == users.end())
-					{
-						User user(userID);
-						users.emplace(userID, user);
-						clients.emplace(sessionID, new Client(userID, user));
-					}
-					else clients.emplace(sessionID, new Client(userID, (*us)));
-
-			#else
 					unordered_map<uint64_t, User>::iterator us = users.find(userID);
 
 					if(us == users.end())
@@ -190,7 +177,6 @@ namespace Peoplez
 						clients.insert(pair<uint64_t, shared_ptr<Client> >(sessionID, client));
 						us->second.Add(sessionID, client);
 					}
-			#endif
 					return sessionID;
 				}
 				catch (...)

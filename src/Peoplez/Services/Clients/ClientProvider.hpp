@@ -41,13 +41,8 @@
 #include "Client.hpp"
 #include "User.hpp"
 
-// Extern include branchers
-//#define UNORDERED
-
 // Extern includes
 #include<unordered_map>
-
-//#include <boost/thread/shared_mutex.hpp>
 #include <shared_mutex>
 
 namespace Peoplez
