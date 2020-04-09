@@ -41,6 +41,12 @@
 
 // External includes
 #include <memory>
+#include <stdexcept>
+
+extern "C"
+{
+#include <openssl/rand.h>
+}
 
 namespace Peoplez
 {
@@ -60,7 +66,12 @@ namespace Peoplez
 				 * @param sessionID Id of the client/session
 				 * @param userData Data of the clients user
 				 */
-				Client(uint64_t sessionID, std::shared_ptr<UserData> userData) : LastRequest(time(0)), SessionID(sessionID), Data(userData) {}
+				Client(uint64_t sessionID, std::shared_ptr<UserData> userData) : LastRequest(time(0)), SessionID(sessionID), Data(userData)
+				{
+					int rc = RAND_bytes(SessionSecret, sizeof(SessionSecret));
+
+					if(rc != 1) throw std::runtime_error("Could not generate cryptographically secure session secret.");
+				}
 				/**
 				 * Sets LastRequst to the actual time
 				 */
@@ -76,6 +87,10 @@ namespace Peoplez
 				 * SessionID of the client
 				 */
 				uint64_t SessionID;
+				/**
+				 * Session secret of the client
+				 */
+				unsigned char SessionSecret[32];
 				/**
 				 * User as which the client is logged in
 				 */

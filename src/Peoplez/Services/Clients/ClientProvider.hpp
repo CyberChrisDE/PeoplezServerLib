@@ -130,8 +130,6 @@ namespace Peoplez
 				bool Contains(uint64_t sessionID, uint64_t userID);
 
 			private:
-				std::shared_ptr<UserData> FetchUserData(uint64_t userID);
-
 				std::unordered_map<uint64_t, std::shared_ptr<Client>> clients;
 				std::unordered_map<uint64_t, User> users;
 				std::shared_timed_mutex clientsMutex;

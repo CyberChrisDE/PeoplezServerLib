@@ -104,7 +104,7 @@ namespace Peoplez
 				friend class HttpContext;
 			public:
 				/**
-				 * @var typedef boost::unordered_map<String::PeoplezString, String::PeoplezString> StringMap
+				 * @var typedef std::unordered_map<String::PeoplezString, String::PeoplezString> StringMap
 				 * @brief Map with key and value as PeoplezStrings
 				 */
 				typedef std::unordered_map<String::PeoplezString, String::PeoplezString> StringMap;

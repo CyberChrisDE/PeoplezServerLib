@@ -44,20 +44,27 @@ namespace Peoplez
 	{
 		namespace Clients
 		{
-			User::User(uint64_t const sessionID, std::shared_ptr<Client> const client)
+			User::User(uint64_t const sessionID, shared_ptr<Client> const client)
 			{
-				clients.insert(std::pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
+				clients.insert(std::pair<uint64_t, shared_ptr<Client> >(sessionID, client));
 			}
 
 			void User::Add(uint64_t const sessionID, shared_ptr<Client> const client)
 			{
-				clients.insert(std::pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
+				clients.insert(std::pair<uint64_t, shared_ptr<Client> >(sessionID, client));
 			}
 
-			std::shared_ptr<Client> User::GetClient() const
+			shared_ptr<Client> User::GetClient() const
 			{
 				if(clients.empty()) return shared_ptr<Client>(0);
 				else return clients.begin()->second;
+			}
+
+			shared_ptr<Client> User::GetClient(uint64_t clientID) const
+			{
+				map<uint64_t, std::shared_ptr<Client> >::const_iterator iter = clients.find(clientID);
+				if(iter != clients.end()) return iter->second;
+				else return 0;
 			}
 
 			void User::Remove(uint64_t const sessionID)

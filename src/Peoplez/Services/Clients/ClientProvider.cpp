@@ -172,7 +172,7 @@ namespace Peoplez
 
 					if(us == users.end())
 					{
-						shared_ptr<Client> client(new Client(sessionID, FetchUserData(userID)));
+						shared_ptr<Client> client(new Client(sessionID, us->second.GetClient()->Data));
 						clients.insert(pair<uint64_t, shared_ptr<Client> >(sessionID, client));
 						User user(sessionID, client);
 						users.insert(pair<uint64_t, User>(userID, user));
@@ -186,7 +186,7 @@ namespace Peoplez
 					else
 					{
 						Logger::LogException("User having no client in ClientProvider::AddClient", __FILE__, __LINE__);
-						shared_ptr<Client> client(new Client(sessionID, FetchUserData(userID)));
+						shared_ptr<Client> client(new Client(sessionID, us->second.GetClient()->Data));
 						clients.insert(pair<uint64_t, shared_ptr<Client> >(sessionID, client));
 						us->second.Add(sessionID, client);
 					}
@@ -274,23 +274,6 @@ namespace Peoplez
 				}
 
 				return false;
-			}
-
-			shared_ptr<UserData> ClientProvider::FetchUserData(uint64_t const userID)
-			{
-				shared_ptr<UserData> result(new UserData);
-
-				try
-				{
-					//TODO Remove this method
-
-				}
-				catch(...)
-				{
-					Logger::LogException("Error in ClientProvider::FetchUserData", __FILE__, __LINE__);
-				}
-
-				return result;
 			}
 
 			ClientProvider::~ClientProvider()

@@ -80,9 +80,15 @@ namespace Peoplez
 				 */
 				bool IsEmpty() const {return clients.empty();}
 				/**
-				 * @brief Getter for the client object
+				 * @brief Getter for an arbitrary client object
 				 */
 				std::shared_ptr<Client> GetClient() const;
+				/**
+				 * @brief Getter for the client object with client id clientID
+				 * @param clientID ID of the client to be returned
+				 * @return shared_ptr to client object if found. shared_ptr to null otherwise.
+				 */
+				std::shared_ptr<Client> GetClient(uint64_t clientID) const;
 				/**
 				 * Removes a client/session from the user
 				 */
