@@ -45,6 +45,8 @@
 
 // Extern includes
 #include <list>
+#include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace Peoplez
@@ -105,7 +107,7 @@ namespace Peoplez
 				 * @var typedef boost::unordered_map<String::PeoplezString, String::PeoplezString> StringMap
 				 * @brief Map with key and value as PeoplezStrings
 				 */
-				typedef boost::unordered_map<String::PeoplezString, String::PeoplezString> StringMap;
+				typedef std::unordered_map<String::PeoplezString, String::PeoplezString> StringMap;
 
 				/**
 				 * Standard constructor

@@ -57,6 +57,9 @@ namespace Peoplez
 	using namespace String::Parsing;
 	using namespace System::Logging;
 
+	// External namespaces
+	using namespace std;
+
 	namespace Services
 	{
 		namespace Http
@@ -167,7 +170,7 @@ namespace Peoplez
 				if(Headers.empty()) return 0;
 
 				size_t res = 0;
-				boost::unordered_map<PeoplezString, PeoplezString>::const_iterator iter = Headers.begin();
+				unordered_map<PeoplezString, PeoplezString>::const_iterator iter = Headers.begin();
 
 				while(iter != Headers.end()) res += 3 + iter->first.Length() + iter->second.Length();
 
@@ -307,7 +310,7 @@ namespace Peoplez
 			PeoplezString HttpResponse::CreateHeaders() const
 			{
 				PeoplezString result;
-				boost::unordered_map<PeoplezString, PeoplezString>::const_iterator iter = Headers.begin();
+				unordered_map<PeoplezString, PeoplezString>::const_iterator iter = Headers.begin();
 
 				while(iter != Headers.end()) result.Append(iter->first + ":" + iter->second + "\r\n");
 

@@ -54,7 +54,7 @@ namespace Peoplez
 				clients.insert(std::pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
 			}
 
-			std::shared_ptr<Client> User::GetClient()
+			std::shared_ptr<Client> User::GetClient() const
 			{
 				if(clients.empty()) return shared_ptr<Client>(0);
 				else return clients.begin()->second;

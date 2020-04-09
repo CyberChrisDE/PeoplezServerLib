@@ -44,10 +44,11 @@
 #include "../Preprocessor/System.hpp"
 
 // External includes
-#include <cstring>
-#include <zlib.h>
-#include <cstdio>
 #include <cassert>
+#include <cstdio>
+#include <cstring>
+#include <ostream>
+#include <zlib.h>
 
 typedef unsigned char v8uc __attribute__((vector_size(8)));
 typedef char v8sc __attribute__((vector_size(8)));
@@ -340,6 +341,19 @@ namespace Peoplez
 			return posBeg - data;
 		}
 		*/
+
+		size_t PeoplezString::HashValue() const noexcept
+		{
+			std::hash<char> hasher;
+			size_t result = 0;
+
+			for(size_t i = 0; i < dataLen; ++i)
+			{
+				result ^= hasher(data[i]) + 0x9e3779b9 + (result << 6) + (result >> 2);
+			}
+
+			return result;
+		}
 
 		bool PeoplezString::IsASCIICompatible(size_t const offset) const noexcept
 		{

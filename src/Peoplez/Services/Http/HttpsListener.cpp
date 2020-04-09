@@ -42,9 +42,10 @@
 
 extern "C"
 {
+#include <arpa/inet.h>
 #include <openssl/err.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
+#include <unistd.h>
 }
 
 using namespace std;

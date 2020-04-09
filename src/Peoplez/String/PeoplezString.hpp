@@ -40,10 +40,11 @@
 #include "../String/Parsing/StringToInt.hpp"
 
 // External includes
-#include <boost/unordered_map.hpp>
+#include <algorithm>
 #include <cstdint>
-#include <vector>
+#include <cstring>
 #include <stdexcept>
+#include <vector>
 
 #ifndef PRIVATE
 	#define PRIVATE private
@@ -327,7 +328,7 @@ namespace Peoplez
 			 * @par Exception Safety
 			 *  No-throw guarantee
 			 */
-			inline size_t HashValue() const noexcept {return Length() > 0 ? boost::hash_range(GetData(), GetData() + Length()) : 0;}
+			size_t HashValue() const noexcept;
 			/**
 			 * Checks whether all bytes of the string have values in the range [0, 127]
 			 *

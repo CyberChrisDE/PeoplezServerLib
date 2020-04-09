@@ -78,11 +78,11 @@ namespace Peoplez
 				 *
 				 * @return True: No clients left; Talse: Clients left
 				 */
-				bool IsEmpty() {return clients.empty();}
+				bool IsEmpty() const {return clients.empty();}
 				/**
 				 * @brief Getter for the client object
 				 */
-				std::shared_ptr<Client> GetClient();
+				std::shared_ptr<Client> GetClient() const;
 				/**
 				 * Removes a client/session from the user
 				 */

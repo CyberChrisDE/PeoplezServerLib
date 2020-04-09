@@ -45,11 +45,7 @@
 //#define UNORDERED
 
 // Extern includes
-#ifdef UNORDERED
-#include <boost/unordered_map.hpp>
-#else
-#include <map>
-#endif
+#include<unordered_map>
 
 //#include <boost/thread/shared_mutex.hpp>
 #include <shared_mutex>
@@ -136,13 +132,8 @@ namespace Peoplez
 			private:
 				std::shared_ptr<UserData> FetchUserData(uint64_t userID);
 
-			#ifdef UNORDERED
-				boost::unordered_map<uint64_t, std::shared_ptr<Client>> clients;
-				boost::unordered_map<uint64_t, User> users;
-			#else
-				std::map<uint64_t, std::shared_ptr<Client> > clients;
-				std::map<uint64_t, std::shared_ptr<User> > users;
-			#endif
+				std::unordered_map<uint64_t, std::shared_ptr<Client>> clients;
+				std::unordered_map<uint64_t, User> users;
 				std::shared_timed_mutex clientsMutex;
 				System::Timer timer;
 			};

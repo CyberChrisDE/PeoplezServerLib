@@ -40,8 +40,9 @@
 #include "../../String/PeoplezString.hpp"
 
 // Extern includes
-#include <thread>
+#include <list>
 #include <memory>
+#include <thread>
 
 namespace Peoplez
 {

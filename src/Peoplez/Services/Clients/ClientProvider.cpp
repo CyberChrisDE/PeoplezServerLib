@@ -68,7 +68,7 @@ namespace Peoplez
 	{
 		namespace Clients
 		{
-			ClientProvider::ClientProvider() : timer(std::bind(&ClientProvider::TimerTimeout, this), std::chrono::seconds(TIMER_INTERVAL_SEC))
+			ClientProvider::ClientProvider() : timer(bind(&ClientProvider::TimerTimeout, this), chrono::seconds(TIMER_INTERVAL_SEC))
 			{
 				Logger::LogEvent("ClientProvider initialized");
 			}
@@ -78,24 +78,18 @@ namespace Peoplez
 				try
 				{
 					time_t maxAlive = time(0) - TIMEOUT_AFTER_SEC; //Maximal noch gültiger Zeitstempel, mit dem Clients gültig bleiben
-					std::unique_lock<std::shared_timed_mutex> lock(clientsMutex);
-			#ifdef UNORDERED
-					for(boost::unordered_map<uint64_t, Client*>::iterator iter = clients.begin(); iter != clients.end(); ++iter)
-					{
-						...
-					}
-			#else
+					unique_lock<shared_timed_mutex> lock(clientsMutex);
 
-					for(std::map<uint64_t, std::shared_ptr<Client> >::const_iterator iter = clients.begin(); iter != clients.end(); )
+					for(unordered_map<uint64_t, shared_ptr<Client> >::const_iterator iter = clients.begin(); iter != clients.end(); )
 					{
 						if(iter->second->LastRequest < maxAlive)
 						{
 							uint64_t userID = iter->second->Data->ID;
-							std::map<uint64_t, std::shared_ptr<User> >::const_iterator us = users.find(userID);
+							unordered_map<uint64_t, User>::iterator us = users.find(userID);
 							if(us != users.end())
 							{
-								us->second->Remove(iter->second->SessionID);
-								if(us->second->IsEmpty()) users.erase(userID);
+								us->second.Remove(iter->second->SessionID);
+								if(us->second.IsEmpty()) users.erase(userID);
 							}
 							else Logger::LogEvent("User missing for client in ClientProvider::RemoveClient");
 
@@ -103,7 +97,6 @@ namespace Peoplez
 						}
 						else ++iter;
 					}
-			#endif
 				}
 				catch(...)
 				{
@@ -117,13 +110,10 @@ namespace Peoplez
 
 				try
 				{
-					std::shared_lock<std::shared_timed_mutex> lock(clientsMutex);
+					shared_lock<shared_timed_mutex> lock(clientsMutex);
 
-			#ifdef UNORDERED
-					boost::unordered_map<uint64_t, std::shared_ptr<Client> >::iterator cl = clients.find(sessionID);
-			#else
-					std::map<uint64_t, std::shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
-			#endif
+					unordered_map<uint64_t, shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
+
 					if(cl != clients.end())
 					{
 						cl->second->Touch();
@@ -138,17 +128,14 @@ namespace Peoplez
 				return result;
 			}
 
-			std::shared_ptr<Client> ClientProvider::GetClient(uint64_t const sessionID)
+			shared_ptr<Client> ClientProvider::GetClient(uint64_t const sessionID)
 			{
 				try
 				{
-					std::shared_lock<std::shared_timed_mutex> lock(clientsMutex);
+					shared_lock<shared_timed_mutex> lock(clientsMutex);
 
-			#ifdef UNORDERED
-					boost::unordered_map<uint64_t, Client*>::iterator cl = clients.find(sessionID);
-			#else
-					std::map<uint64_t, std::shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
-			#endif
+					unordered_map<uint64_t, shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
+
 					if(cl == clients.end()) return 0;
 					cl->second->Touch();
 					return cl->second;
@@ -164,7 +151,7 @@ namespace Peoplez
 			{
 				try
 				{
-					std::unique_lock<std::shared_timed_mutex> lock(clientsMutex);
+					unique_lock<shared_timed_mutex> lock(clientsMutex);
 
 					//Erstellen einer SessionID
 					uint64_t sessionID = General::Math::Rnd64();
@@ -181,27 +168,27 @@ namespace Peoplez
 					else clients.emplace(sessionID, new Client(userID, (*us)));
 
 			#else
-					std::map<uint64_t, std::shared_ptr<User> >::const_iterator us = users.find(userID);
+					unordered_map<uint64_t, User>::iterator us = users.find(userID);
 
 					if(us == users.end())
 					{
-						std::shared_ptr<Client> client(new Client(sessionID, FetchUserData(userID)));
-						clients.insert(pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
-						std::shared_ptr<User> user(new User(sessionID, client));
-						users.insert(pair<uint64_t, std::shared_ptr<User> >(userID, user));
+						shared_ptr<Client> client(new Client(sessionID, FetchUserData(userID)));
+						clients.insert(pair<uint64_t, shared_ptr<Client> >(sessionID, client));
+						User user(sessionID, client);
+						users.insert(pair<uint64_t, User>(userID, user));
 					}
-					else if(us->second->GetClient().get() != 0)
+					else if(us->second.GetClient().get() != 0)
 					{
-						std::shared_ptr<Client> client(new Client(sessionID, us->second->GetClient()->Data));
-						clients.insert(pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
-						us->second->Add(sessionID, client);
+						shared_ptr<Client> client(new Client(sessionID, us->second.GetClient()->Data));
+						clients.insert(pair<uint64_t, shared_ptr<Client> >(sessionID, client));
+						us->second.Add(sessionID, client);
 					}
 					else
 					{
 						Logger::LogException("User having no client in ClientProvider::AddClient", __FILE__, __LINE__);
-						std::shared_ptr<Client> client(new Client(sessionID, FetchUserData(userID)));
-						clients.insert(pair<uint64_t, std::shared_ptr<Client> >(sessionID, client));
-						us->second->Add(sessionID, client);
+						shared_ptr<Client> client(new Client(sessionID, FetchUserData(userID)));
+						clients.insert(pair<uint64_t, shared_ptr<Client> >(sessionID, client));
+						us->second.Add(sessionID, client);
 					}
 			#endif
 					return sessionID;
@@ -217,18 +204,18 @@ namespace Peoplez
 			{
 				try
 				{
-					std::unique_lock<std::shared_timed_mutex> const lock(clientsMutex);
+					unique_lock<shared_timed_mutex> const lock(clientsMutex);
 
-					std::map<uint64_t, std::shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
+					unordered_map<uint64_t, shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
 
 					if(cl != clients.end())
 					{
 						uint64_t const userID = cl->second->Data->ID;
-						std::map<uint64_t, std::shared_ptr<User> >::const_iterator us = users.find(userID);
+						unordered_map<uint64_t, User>::iterator us = users.find(userID);
 						if(us != users.end())
 						{
-							us->second->Remove(sessionID);
-							if(us->second->IsEmpty()) users.erase(userID);
+							us->second.Remove(sessionID);
+							if(us->second.IsEmpty()) users.erase(userID);
 						}
 						else Logger::LogEvent("User missing for client in ClientProvider::RemoveClient");
 
@@ -248,13 +235,10 @@ namespace Peoplez
 			{
 				try
 				{
-					std::shared_lock<std::shared_timed_mutex> const lock(clientsMutex);
+					shared_lock<shared_timed_mutex> const lock(clientsMutex);
 
-			#ifdef UNORDERED
-					boost::unordered_map<uint64_t, Client*>::iterator cl = clients.find(sessionID);
-			#else
-					std::map<uint64_t, std::shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
-			#endif
+					unordered_map<uint64_t, shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
+
 					if(cl != clients.end())
 					{
 						cl->second->Touch();
@@ -274,13 +258,10 @@ namespace Peoplez
 			{
 				try
 				{
-					std::shared_lock<std::shared_timed_mutex> const lock(clientsMutex);
+					shared_lock<shared_timed_mutex> const lock(clientsMutex);
 
-			#ifdef UNORDERED
-					boost::unordered_map<uint64_t, Client*>::iterator cl = clients.find(sessionID);
-			#else
-					std::map<uint64_t, std::shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
-			#endif
+					unordered_map<uint64_t, shared_ptr<Client> >::const_iterator cl = clients.find(sessionID);
+
 					if(cl != clients.end())
 					{
 						cl->second->Touch();
@@ -295,13 +276,14 @@ namespace Peoplez
 				return false;
 			}
 
-			std::shared_ptr<UserData> ClientProvider::FetchUserData(uint64_t const userID)
+			shared_ptr<UserData> ClientProvider::FetchUserData(uint64_t const userID)
 			{
-				std::shared_ptr<UserData> result(new UserData);
+				shared_ptr<UserData> result(new UserData);
 
 				try
 				{
 					//TODO Remove this method
+
 				}
 				catch(...)
 				{
@@ -313,13 +295,10 @@ namespace Peoplez
 
 			ClientProvider::~ClientProvider()
 			{
-				std::unique_lock<std::shared_timed_mutex> const lock(clientsMutex);
-		#ifdef UNORDERED
-				boost::unordered_map<uint64_t, Client*>::iterator iter = clients.begin();
-		#else
+				unique_lock<shared_timed_mutex> const lock(clientsMutex);
+
 				clients.clear();
 				users.clear();
-		#endif
 
 				Logger::LogEvent("ClientProvider closed");
 			}

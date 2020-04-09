@@ -46,6 +46,7 @@ extern "C"
 #include <fcntl.h>
 #include <sys/eventfd.h>
 #include <sys/epoll.h>
+#include <unistd.h>
 }
 
 /**

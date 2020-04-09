@@ -48,13 +48,14 @@ namespace Peoplez
 			/**
 			 * @brief Container for the user information
 			 */
-			class UserData final
+			class UserData
 			{
 			public:
 				/**
 				 * @brief Standard constructor
 				 */
 				UserData() : ID(0) {}
+				virtual ~UserData() {}
 				/**
 				 * @brief ID of the user
 				 */

@@ -43,8 +43,9 @@
 
 extern "C"
 {
-#include <sys/socket.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
 }
 
 #ifndef PEOPLEZ_DEFAULT_CIPHER_LIST

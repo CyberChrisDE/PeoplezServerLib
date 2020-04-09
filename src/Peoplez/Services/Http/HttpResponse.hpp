@@ -43,6 +43,7 @@
 
 // Extern includes
 #include <list>
+#include <unordered_map>
 
 namespace Peoplez
 {
@@ -131,7 +132,7 @@ namespace Peoplez
 			class HttpResponse final
 			{
 				friend class HttpContext;
-				typedef boost::unordered_map<String::PeoplezString, String::PeoplezString> StringMap;
+				typedef std::unordered_map<String::PeoplezString, String::PeoplezString> StringMap;
 				typedef std::pair<char const *, size_t> ConstStrLenContainer;
 			public:
 
