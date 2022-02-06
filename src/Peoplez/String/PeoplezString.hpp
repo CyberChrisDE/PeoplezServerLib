@@ -664,6 +664,7 @@ namespace Peoplez
 			/**
 			 * Encodes data to html encoded data
 			 */
+			[[nodiscard]]
 			bool EncodeHtml() noexcept(false);
 			/**
 			 * Encodes data to url encoded data

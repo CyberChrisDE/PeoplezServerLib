@@ -125,7 +125,7 @@ namespace Peoplez
 
 			size_t len;
 			std::shared_ptr<Element> elements;
-			boost::shared_array<PeoplezString> replaceables;
+			std::shared_ptr<PeoplezString[]> replaceables;
 			PeoplezString * replacings;
 			//PeoplezString * predefs;
 		};

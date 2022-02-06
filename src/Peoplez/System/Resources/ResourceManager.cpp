@@ -73,9 +73,9 @@ namespace Peoplez
 					{//Loading public files
 						struct stat fileInfo;
 						struct dirent *currentFile;
-						DIR *dir;
+						DIR * const dir = opendir(directory.EnsureZeroTermination().GetData());
 
-						if((dir = opendir(directory.EnsureZeroTermination().GetData())) == NULL) Logger::LogException("Public directory could not be opened", __FILE__, __LINE__);
+						if(dir == NULL) Logger::LogException("Public directory could not be opened", __FILE__, __LINE__);
 						else
 						{
 							while((currentFile = readdir(dir)) != NULL)
@@ -115,14 +115,14 @@ namespace Peoplez
 					while(first + 1 < last)
 					{
 						int const pos = ((first + last) >> 1);
-						int const comparison = resources[pos].Name.Compare(fileName);
+						int const comparison = resources[pos]->Name.Compare(fileName);
 
 						if(comparison > 0) first = pos;
 						else if(comparison < 0) last = pos;
-						else return resources[pos].GetResource(hash);
+						else return resources[pos]->GetResource(hash);
 					}
 
-					ResourceHolderPreloaded *resource = new ResourceHolderPreloaded(directory, fileName);
+					ResourceHolderPreloaded * const resource = new ResourceHolderPreloaded(directory, fileName);
 					resources.insert(resources.begin() + last, resource);
 
 					return resource->GetResource(hash);
@@ -166,6 +166,7 @@ namespace Peoplez
 
 			ResourceManager::~ResourceManager() noexcept
 			{
+				for(size_t i = 0; i < resources.size(); ++i) delete resources[i];
 				Logger::LogEvent("ResourceManager closed");
 			}
 		} // namespace Resources

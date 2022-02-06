@@ -40,7 +40,6 @@
 #include "Element.hpp"
 
 // Extern includes
-#include <boost/shared_array.hpp>
 #include <memory>
 
 namespace Peoplez
@@ -101,7 +100,7 @@ namespace Peoplez
 			void SetReplaceables(PeoplezString const *Replaceables, int Len);
 
 			int len;
-			boost::shared_array<PeoplezString> replaceables;
+			std::shared_ptr<PeoplezString[]> replaceables;
 			PeoplezString* replacings;
 		};
 	} // namespace String

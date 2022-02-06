@@ -67,7 +67,7 @@ namespace Peoplez
 		void PeoplezStringBuilderData::SetReplaceables(PeoplezString const *Replaceables, int Len)
 		{
 			len = Len;
-			replaceables = boost::shared_array<PeoplezString>(new PeoplezString[Len]);
+			replaceables = std::shared_ptr<PeoplezString[]>(new PeoplezString[Len], std::default_delete<PeoplezString[]>());
 			for(int i = 0; i < len; ++i) replaceables[i] = Replaceables[i];
 			delete[] replacings;
 			replacings = new PeoplezString[Len];

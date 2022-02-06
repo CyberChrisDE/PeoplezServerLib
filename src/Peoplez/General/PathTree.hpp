@@ -40,7 +40,6 @@
 #include "../String/PeoplezString.hpp"
 
 // External includes
-//#include <boost/thread.hpp>
 #include <thread>
 #include <shared_mutex>
 #include <mutex>

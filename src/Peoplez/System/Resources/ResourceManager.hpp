@@ -41,7 +41,6 @@
 #include "ResourceHolder.hpp"
 
 // Extern includes
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <mutex>
 
 namespace Peoplez
@@ -79,10 +78,10 @@ namespace Peoplez
 				 */
 				Resource GetResource(String::PeoplezString fileName, size_t hash);
 				//FileSaveStatus SaveFile(uint64_t userID, String::PeoplezString fileName, String::PeoplezString content) noexcept;
-				~ResourceManager();
+				~ResourceManager() noexcept;
 			private:
 				String::PeoplezString directory;
-				boost::ptr_vector<ResourceHolder> resources;
+				std::vector<ResourceHolder *> resources;
 				std::mutex resourceMutex;
 			};
 		} // namespace Resources

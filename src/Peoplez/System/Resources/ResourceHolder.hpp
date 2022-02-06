@@ -65,7 +65,7 @@ namespace Peoplez
 				 * @param _name Name of the resource for the resource manager
 				 */
 				ResourceHolder(String::PeoplezString _name) : Name(_name), hash(0), lastModified(0), lastSetup(0) {}
-				virtual ~ResourceHolder() {}
+				virtual ~ResourceHolder() noexcept {}
 
 				/**
 				 * Getter for the resource
