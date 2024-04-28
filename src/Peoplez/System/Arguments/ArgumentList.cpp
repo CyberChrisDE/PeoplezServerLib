@@ -38,6 +38,7 @@
 
 // External includes
 #include <cstring>
+#include <stdexcept>
 
 namespace Peoplez
 {

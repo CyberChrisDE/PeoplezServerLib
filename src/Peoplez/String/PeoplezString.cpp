@@ -50,8 +50,8 @@
 #include <ostream>
 #include <zlib.h>
 
-typedef unsigned char v8uc __attribute__((vector_size(8)));
-typedef char v8sc __attribute__((vector_size(8)));
+//typedef unsigned char v8uc __attribute__((vector_size(8)));
+//typedef char v8sc __attribute__((vector_size(8)));
 
 // External namespaces
 using namespace std;

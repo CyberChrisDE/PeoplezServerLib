@@ -3,7 +3,7 @@ CC := gcc
 CXX := g++
 LD := g++
 MC := cbmc
-#MC := ~/Downloads/cbmc-5-10-linux-64/cbmc
+VF := /path/to/verifast
 
 # Compilation flags
 CXXFLAGS := -std=c++1y
@@ -22,9 +22,13 @@ LDRELEASE := -O2
 SOURCEDIR := src
 BUILDDIR := bin
 
+# Verification parameters
+VFARGS := -I /path/to/verifast/includes
+
 # Determine source files and '.o'-files
 CPPSOURCES := $(shell find $(SOURCEDIR) -name '*.cpp')
 CSOURCES := $(shell find $(SOURCEDIR) -name '*.c')
+VFSOURCES := src/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/System/Alignment.hpp
 #SOURCES := $(CSOURCES) $(CPPSOURCES)
 OBJS := $(patsubst $(SOURCEDIR)/%.cpp, $(BUILDDIR)/%.o, $(CPPSOURCES)) $(patsubst $(SOURCEDIR)/%.c, $(BUILDDIR)/%.o, $(CSOURCES))
 
@@ -53,6 +57,9 @@ debug_dynamic: CFLAGS += $(CPPDEBUG) -fPIC
 debug_dynamic: cpy_dirs $(OBJS)
 	$(LD) -shared $(LDFLAGS) $(LDDEBUG) $(OBJS) $(LDLIBS) -o $(BUILDDIR)/libPeoplezServerLib.so
 
+verify:
+	$(foreach f,$(VFSOURCES),$(VFDIR)/$(VF) -c -target Linux64 $(VFARGS) $(f) &&) echo ''
+
 cpy_dirs:
 	$(shell cd src; find -type d -exec mkdir -p "../bin/{}" \;)
 
@@ -70,7 +77,3 @@ clean: clean_objs
 
 clean_objs:
 	rm -f $(OBJS)
-
-#	Model checking tests
-#mc_test:
-#	$(MC) mc_tests/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/String/Parsing/IntToString.cpp --function TEST_ToCStringBase10_int32_t --bounds-check --cpp11 -D CBMC

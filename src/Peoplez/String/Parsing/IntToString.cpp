@@ -34,10 +34,16 @@
  */
 
 // Own header
-#include "IntToString.hpp"
+// #include "IntToString.hpp"
 
 // External includes
+#include <cstdint>
 #include <algorithm>
+
+//@ #include <nat.gh>
+
+//@ fixpoint nat N19() { return succ(succ(succ(succ(N15)))); }
+//@ fixpoint nat N20() { return succ(N19); }
 
 namespace Peoplez
 {
@@ -45,111 +51,122 @@ namespace Peoplez
 	{
 		namespace Parsing
 		{
-			template<>
-			unsigned int ToCStringBase10(char * target, int32_t const val_)
+			unsigned int ToCStringBase10(char * target, uint32_t val) noexcept
+			//@ requires chars(target, ?count, _) &*& count >= 11;
+			//@ ensures chars(target, count, _) &*& result <= 10;
 			{
-				char * const begin = target;
-				int64_t val = val_;
+				//@ chars_split(target, 0);
+				unsigned i = 0;
+				//@ nat p = N10;
 
-				// Check sign
+				// Decode decimal digits (in reverse order)
+				do
+				//@ invariant chars(target, i, _) &*& chars(target + i, count - i, _) &*& p != zero &*& i == 10 - int_of_nat(p) &*& val < pow_nat(10, p);
+				{
+					//@ div_rem_nonneg(val, 10);
+					char const c = (char)('0' + (char)(val % 10));
+					//@ open chars(target + i, count - i, _);
+					//@ character_limits(target + i);
+					*(target + i) = c;
+					//@ close chars(target + i, 1, _);
+					//@ chars_join(target);
+					//@ assert p == succ(_);
+					val /= 10;
+					//@ p = nat_predecessor(p);
+					//@ assert (val <= 0 && val >= 0) ? val == 0 : true;
+					++i;
+				}while(val);
+
+				// Reverse order of digits to correct order
+				std::reverse(target, target + i);
+
+				// Add '\0'-termination
+				//@ open chars(target + i, count - i, _);
+				*(target + i) = '\0';				
+				//@ close chars(target + i, count - i, _);
+				//@ chars_join(target);
+
+				// Return length of string
+				return i;
+			}
+
+			unsigned int ToCStringBase10(char * target, int32_t const val) noexcept
+			//@ requires chars(target, ?count, _) &*& count >= 12;
+			//@ ensures chars(target, count, _) &*& result <= 11;
+			{
+				uint32_t val_;
+
 				if(val < 0)
 				{
+					val_ = (val == -2147483648) ? (uint32_t) 2147483648 : (uint32_t) -val;
+					//@ open chars(target, count, _);
+					//@ open chars(target + 1, count - 1, _);
+					//@ character_limits(target + 1);
 					*target++ = '-';
-					val *= -1;
+					//@ close chars(target, count - 1, _);
 				}
+				else val_ = (uint32_t) val;
 
-				// Decode decimal degits (in reverse order)
-				do
-				{
-					*target++ = '0' + val % 10;
-					val /= 10;
-				}while(val);
-
-				// Reverse order of decimal digits to correct order
-				std::reverse(val_ < 0 ? begin + 1 : begin, target);
-
-				// Add '\0'-termination
-				*target = '\0';
-
-				// Return length of string
-				return target - begin;
+				return ToCStringBase10(target, val_);
 			}
 
-			template<>
-			unsigned int ToCStringBase10(char * target, uint32_t val)
+			unsigned int ToCStringBase10(char * target, uint64_t val) noexcept
+			//@ requires chars(target, ?count, _) &*& count >= 21;
+			//@ ensures chars(target, count, _) &*& result <= 20;
 			{
-				char * const begin = target;
+				//@ chars_split(target, 0);
+				unsigned i = 0;
+				//@ nat p = N20;
 
 				// Decode decimal digits (in reverse order)
 				do
+				//@ invariant chars(target, i, _) &*& chars(target + i, count - i, _) &*& p != zero &*& i == 20 - int_of_nat(p) &*& val < pow_nat(10, p);
 				{
-					*target++ = '0' + val % 10;
+					//@ div_rem_nonneg(val, 10);
+					char const c = (char)('0' + (char)(val % 10));
+					//@ open chars(target + i, count - i, _);
+					//@ character_limits(target + i);
+					*(target + i) = c;
+					//@ close chars(target + i, 1, _);
+					//@ chars_join(target);
+					//@ assert p == succ(_);
 					val /= 10;
+					//@ p = nat_predecessor(p);
+					//@ assert (val <= 0 && val >= 0) ? val == 0 : true;
+					++i;
 				}while(val);
 
 				// Reverse order of digits to correct order
-				std::reverse(begin, target);
+				std::reverse(target, target + i);
 
 				// Add '\0'-termination
-				*target = '\0';
+				//@ open chars(target + i, count - i, _);
+				*(target + i) = '\0';				
+				//@ close chars(target + i, count - i, _);
+				//@ chars_join(target);
 
 				// Return length of string
-				return target - begin;
+				return i;
 			}
 
-			template<>
-			unsigned int ToCStringBase10(char * target, int64_t val_)
+			unsigned int ToCStringBase10(char * target, int64_t const val) noexcept
+			//@ requires chars(target, ?count, _) &*& count >= 22;
+			//@ ensures chars(target, count, _) &*& result <= 21;
 			{
-				char * const begin = target;
-				bool neg = false;
+				uint64_t val_;
 
-				// Check sign
-				if(val_ < 0)
+				if(val < 0)
 				{
+					val_ = (val == -9223372036854775807LL - 1) ? (uint64_t) 9223372036854775808ULL : (uint64_t) -val;
+					//@ open chars(target, count, _);
+					//@ open chars(target + 1, count - 1, _);
+					//@ character_limits(target + 1);
 					*target++ = '-';
-					val_ *= -1;
-					neg = true;
+					//@ close chars(target, count - 1, _);
 				}
+				else val_ = (uint64_t) val;
 
-				// Decode decimal digits (in reverse order)
-				uint64_t val = val_;
-
-				do
-				{
-					*target++ = '0' + val % 10;
-					val /= 10;
-				}while(val);
-
-				// Reverse order of decimal digits to correct order
-				std::reverse(neg ? begin + 1 : begin, target);
-
-				// Add '\0'-termination
-				*target = '\0';
-
-				// Return length of string
-				return target - begin;
-			}
-
-			template<>
-			unsigned int ToCStringBase10(char * target, uint64_t val)
-			{
-				char * const begin = target;
-
-				// Decode decimal digits (in reverse order)
-				do
-				{
-					*target++ = '0' + val % 10;
-					val /= 10;
-				}while(val);
-
-				// Reverse order of digits to correct order
-				std::reverse(begin, target);
-
-				// Add '\0'-termination
-				*target = '\0';
-
-				// Return length of string
-				return target - begin;
+				return ToCStringBase10(target, val_);
 			}
 		} // namespace Parsing
 	} // namespace String

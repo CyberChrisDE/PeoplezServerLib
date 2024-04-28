@@ -38,8 +38,6 @@
 
 // External includes
 #include <cstdint>
-#include <cstdlib>
-#include <type_traits>
 
 namespace Peoplez
 {
@@ -48,29 +46,17 @@ namespace Peoplez
 		namespace Parsing
 		{
 			/**
-			 * Converts an integer type to a CString
-			 *
-			 * @param target Target CString
-			 * @param val Source value
-			 *
-			 * @return Length of the CString (without terminating '\0'); Minimum is 1
-			 */
-			template<typename T> unsigned int ToCStringBase10(char *target, T val)
-			{
-				static_assert(std::is_same<T, int32_t>::value || std::is_same<T, uint32_t>::value || std::is_same<T, int64_t>::value || std::is_same<T, uint64_t>::value, "Not supported type for conversion");
-				return 0;
-			}
-
-			/**
 			 * Converts an int32 to a CString
 			 *
 			 * @param target Target CString.
 			 * This should have at least 12 bytes reserved (10 digits + sign + '\0'-termination)
 			 * @param val Source value
 			 *
-			 * @result Length of the CString (without terminating '\0'); Minimum is 1
+			 * @result Length of the CString (without terminating '\0');
 			 */
-			template<> unsigned int ToCStringBase10(char * target, int32_t val) __attribute__((nonnull));
+			unsigned int ToCStringBase10(char * target, int32_t val) noexcept __attribute__((nonnull));
+			//@ requires chars(target, ?count, _) &*& count >= 12;
+			//@ ensures chars(target, count, _) &*& result <= 11;
 			/**
 			 * Converts an uint32 to a CString
 			 *
@@ -78,9 +64,11 @@ namespace Peoplez
 			 * This should have at least 11 bytes reserved (10 digits + '\0'-termination)
 			 * @param val Source value
 			 *
-			 * @result Length of the CString (without terminating '\0'); Minimum is 1
+			 * @result Length of the CString (without terminating '\0');
 			 */
-			template<> unsigned int ToCStringBase10(char * target, uint32_t val) __attribute__((nonnull));
+			unsigned int ToCStringBase10(char * target, uint32_t val) noexcept __attribute__((nonnull));
+			//@ requires chars(target, ?count, _) &*& count >= 11;
+			//@ ensures chars(target, count, _) &*& result <= 10;
 			/**
 			 * Converts an int64 to a CString
 			 *
@@ -88,9 +76,11 @@ namespace Peoplez
 			 * This should have at least 21 bytes reserved (19 digits + sign + '\0'-termination)
 			 * @param val Source value
 			 *
-			 * @result Length of the CString (without terminating '\0'); Minimum is 1
+			 * @result Length of the CString (without terminating '\0');
 			 */
-			template<> unsigned int ToCStringBase10(char * target, int64_t val) __attribute__((nonnull));
+			unsigned int ToCStringBase10(char * target, int64_t val) noexcept __attribute__((nonnull));
+			//@ requires chars(target, ?count, _) &*& count >= 22;
+			//@ ensures chars(target, count, _) &*& result <= 21;
 			/**
 			 * Converts an uint64 to a CString
 			 *
@@ -98,9 +88,11 @@ namespace Peoplez
 			 * This should have at least 21 bytes reserved (20 digits + '\0'-termination)
 			 * @param val Source value
 			 *
-			 * @result Length of the CString (without terminating '\0'); Minimum is 1
+			 * @result Length of the CString (without terminating '\0');
 			 */
-			template<> unsigned int ToCStringBase10(char * target, uint64_t val) __attribute__((nonnull));
+			unsigned int ToCStringBase10(char * target, uint64_t val) noexcept __attribute__((nonnull));
+			//@ requires chars(target, ?count, _) &*& count >= 21;
+			//@ ensures chars(target, count, _) &*& result <= 20;
 		} // namespace Parsing
 	} // namespace String
 } // namespace Peoplez
