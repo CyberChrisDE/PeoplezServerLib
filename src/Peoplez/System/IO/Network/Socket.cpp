@@ -37,11 +37,11 @@
 #include "Socket.hpp"
 
 // Extern includes
-extern "C"
-{
+//extern "C"
+//{
 #include <unistd.h>
 #include <sys/socket.h>
-}
+//}
 
 namespace Peoplez
 {
@@ -51,27 +51,37 @@ namespace Peoplez
 		{
 			namespace Network
 			{
-				Socket::Socket(Socket && other) noexcept : open(other.open), sock(other.sock)
+				Socket::Socket(Socket && other) noexcept : isOpen(other.isOpen), sock(other.sock)
+				//@ requires other.isOpen |-> ?is_open &*& other.sock |-> ?sock;
+				//@ ensures valid(sock, is_open) &*& other.isOpen |-> false &*& other.sock |-> sock &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
-					other.open = false;
+					other.isOpen = false;
 				}
 
 				int Socket::Recv(char * const buf, size_t const len) noexcept
+				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= INT_MAX &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
-					return recv(sock, buf, len, 0);
+					ssize_t const res = recv(sock, buf, len, 0);
+					return (int)res;
 				}
 
-				int Socket::Send(char const * const buff, int const len) noexcept
+				int Socket::Send(char const * const buf, size_t const len) noexcept
+				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= INT_MAX &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
-					return send(sock, buff, len, 0);
+					ssize_t const res = send(sock, buf, len, 0);
+					return (int)res;
 				}
 
 				void Socket::Close() noexcept
+				//@ requires valid(?sock, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ ensures valid(sock, false) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
-					if(open)
+					if(isOpen)
 					{
 						close(sock);
-						open = false;
+						isOpen = false;
 					}
 				}
 			} // namespace Network

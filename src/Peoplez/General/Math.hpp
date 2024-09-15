@@ -39,18 +39,7 @@
 // External includes
 #include <cstdint>
 #include <cstddef>
-
-#define CLZ_u32(x) ((x) ? __builtin_clz(x) : 32)
-#define CLZ_u64(x) ((x) ? __builtin_clzl(x) : 64)
-#define CTZ_u32(x) ((x) ? __builtin_ctz(x) : 32)
-#define CTZ_u64(x) ((x) ? __builtin_ctzl(x) : 64)
-
-#ifdef __LZCNT__
-extern "C"
-{
-	#include <x86intrin.h>
-}
-#endif
+#include <bit>
 
 namespace Peoplez
 {
@@ -76,11 +65,11 @@ namespace Peoplez
 			 *
 			 * @param val value
 			 */
-			inline unsigned int minBitSet(unsigned long val) noexcept {return __builtin_ctzl(val);}
+			constexpr unsigned int minBitSet(uint64_t const val) noexcept {return std::countr_zero(val);}
 			/**
 			 * @copydoc minBitSet(uint64_t val)
 			 */
-			inline unsigned int minBitSet(unsigned int val) noexcept {return __builtin_ctz(val);}
+			constexpr unsigned int minBitSet(uint32_t const val) noexcept {return std::countr_zero(val);}
 			/**
 			 * Identifies the index of the MSB that is set
 			 *
@@ -89,56 +78,14 @@ namespace Peoplez
 			 *
 			 * @param val value
 			 */
-	#ifdef __LZCNT__
-			inline unsigned int maxBitSet(uint64_t val) noexcept {return 63 - _lzcnt_u64(val);}
-	#else
-			//inline unsigned int maxBitSet(uint64_t val) noexcept {unsigned int res1 = __builtin_clz((uint32_t) (val >> 32)); return res1 < 32 ? 63 - res1 : 31 - __builtin_clz((uint32_t) val);}
-			inline unsigned int maxBitSet(uint64_t val) noexcept {return 63 - CLZ_u64(val);}
-	#endif
+			constexpr unsigned int maxBitSet(uint64_t const val) noexcept {return 63 - std::countl_zero(val);}
 			/**
 			 * @copydoc maxBitSet(uint64_t val)
 			 */
-	#ifdef __LZCNT__
-			inline unsigned int maxBitSet(uint32_t val) noexcept {return 31 - _lzcnt_u32(val);}
-	#else
-			inline unsigned int maxBitSet(uint32_t val) noexcept {return 31 - CLZ_u32(val);}
-	#endif
-			/**
-			 * Counts the number of 0s before first 1
-			 *
-			 * Counts the number of Bits that are more significant than the most significant one that is set
-			 */
-			inline size_t LeadingZeros(unsigned char val) noexcept {return CLZ_u32(val) - 24;}
-			/**
-			 * @copydoc LeadingZeros(unsigned char val)
-			 */
-			inline size_t LeadingZeros(uint32_t val) noexcept {return CLZ_u32(val);}
-			/**
-			 * @copydoc LeadingZeros(unsigned char val)
-			 */
-			inline size_t LeadingZeros(uint64_t val) noexcept {return CLZ_u64(val);}
-			/**
-			 * Counts the number of 1s before first 0
-			 *
-			 * Counts the number of Bits that are more significant than the most significant one that is not set
-			 *
-			 * @param val value
-			 */
-			inline size_t LeadingOnes(unsigned char val) noexcept {return CLZ_u32(val ^ 0xFF) - 24;}
-			/**
-			 * @copydoc LeadingOnes(unsigned char val)
-			 */
-			inline size_t LeadingOnes(uint32_t val) noexcept {return CLZ_u32(val ^ 0xFFFFFFFF);}
-			/**
-			 * @copydoc LeadingOnes(unsigned char val)
-			 */
-			inline size_t LeadingOnes(uint64_t val) noexcept {return LeadingZeros(val ^ 0xFFFFFFFFFFFFFFFF);}
+			constexpr unsigned int maxBitSet(uint32_t const val) noexcept {return 31 - std::countl_zero(val);}
 
 #if __GNUC__ || __clang__
 #define FAST_OVERFLOW_CHECKS
-#endif
-
-#if __GNUC__ || __clang__
 			template <typename T1, typename T2, typename T3>
 			inline bool addOverflow(T1 const a, T2 const b, T3 * const c) {return __builtin_add_overflow(a, b, c);}
 

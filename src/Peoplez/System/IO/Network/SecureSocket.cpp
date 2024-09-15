@@ -45,17 +45,24 @@ namespace Peoplez
 			namespace Network
 			{
 				int SecureSocket::Recv(char * const buf, size_t const len) noexcept
+				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
-					return SSL_read(ssl, buf, len);
+					return IsOpen() ? SSL_read(ssl, buf, (int)len) : -1;
 				}
 
-				int SecureSocket::Send(char const * const buff, int const len) noexcept
+				int SecureSocket::Send(char const * const buf, size_t const len) noexcept
+				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
-					return SSL_write(ssl, buff, len);
+					return IsOpen() ? SSL_write(ssl, buf, (int)len) : -1;
 				}
 
 				void SecureSocket::Close() noexcept
+				//@ requires valid(?sock, ?is_open) &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ ensures valid(sock, false) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
+					//@ open valid(sock, is_open);
 					if(IsOpen())
 					{
 						//SSL_shutdown(ssl);
@@ -63,6 +70,7 @@ namespace Peoplez
 						SSL_free(ssl);
 						Socket::Close();
 					}
+					//@ close valid(sock, false);
 				}
 			} // namespace Network
 		} // namespace IO

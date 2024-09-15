@@ -53,6 +53,9 @@ namespace Peoplez
 				 */
 				class Socket
 				{
+					/*@
+					predicate valid(int fd, bool is_open) = this->sock |-> fd &*& this->isOpen |-> is_open;
+					@*/
 				public:
 					/**
 					 * Constructor
@@ -61,20 +64,36 @@ namespace Peoplez
 					 *
 					 * @param so Socket to be sent to
 					 */
-					Socket(int const so) noexcept : open(true), sock(so) {}
+					Socket(int const so) noexcept : isOpen(true), sock(so)
+					//@ requires true;
+					//@ ensures valid(so, true) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
+					{
+					}
+
 					Socket(Socket && other) noexcept;
+					//@ requires other.isOpen |-> ?is_open &*& other.sock |-> ?sock;
+					//@ ensures valid(sock, is_open) &*& other.isOpen |-> false &*& other.sock |-> sock &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
+
 					/**
 					 * Getter for the socket file descriptor
 					 *
 					 * @return Socket file descriptor
 					 */
-					inline int GetSocketID() const noexcept {return sock;}
+					inline int GetSocketID() const noexcept
+					//@ requires valid(?sock, ?is_open);
+					//@ ensures valid(sock, is_open) &*& result == sock;
+					{return sock;}
+
 					/**
 					 * Checks whether the socket is open
 					 *
 					 * @return True: Socket is open; False: Socket is closed
 					 */
-					inline bool IsOpen() const noexcept {return open;}
+					inline bool IsOpen() const noexcept
+					//@ requires valid(?sock, ?is_open);
+					//@ ensures valid(sock, is_open) &*& result == is_open;
+					{return isOpen;}
+
 					/**
 					 * Receives data and writes them to the given array
 					 *
@@ -82,27 +101,41 @@ namespace Peoplez
 					 * @param len Size of the buffer
 					 */
 					virtual int Recv(char *buf, size_t len) noexcept;
+					//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+					//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
+
 					/**
 					 * Sends the given data to the client
 					 *
 					 * @param buff Data to be send
 					 * @param len Size of data in byte
 					 */
-					virtual int Send(const char* buff, int len) noexcept;
+					virtual int Send(const char* buf, size_t len) noexcept;
+					//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+					//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
+
 					/**
 					 * Closes the socket
 					 */
 					virtual void Close() noexcept;
+					//@ requires valid(?sock, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+					//@ ensures valid(sock, false) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
+
 					/**
 					 * Destructor
 					 */
-					virtual ~Socket() noexcept {Close();}
+					virtual ~Socket() noexcept
+					//@ requires valid(?sock, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
+					//@ ensures true;
+					{
+						Close();
+					}
 				private:
 					Socket() = delete;
 					Socket(Socket const &other) = delete;
 					Socket operator=(Socket const &rhs) = delete;
 
-					bool open;
+					bool isOpen;
 					int sock;
 				};
 			} // namespace Network

@@ -6,7 +6,7 @@ MC := cbmc
 VF := /path/to/verifast
 
 # Compilation flags
-CXXFLAGS := -std=c++1y
+CXXFLAGS := -std=c++20
 CFLAGS := 
 CPPFLAGS := -Wall
 CPPDEBUG := -O0 -g3 -DDEBUG
@@ -28,7 +28,7 @@ VFARGS := -I /path/to/verifast/includes
 # Determine source files and '.o'-files
 CPPSOURCES := $(shell find $(SOURCEDIR) -name '*.cpp')
 CSOURCES := $(shell find $(SOURCEDIR) -name '*.c')
-VFSOURCES := src/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/System/Alignment.hpp
+VFSOURCES := src/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/System/Alignment.hpp src/Peoplez/System/IO/Network/Socket.cpp src/Peoplez/System/IO/Network/SecureSocket.cpp
 #SOURCES := $(CSOURCES) $(CPPSOURCES)
 OBJS := $(patsubst $(SOURCEDIR)/%.cpp, $(BUILDDIR)/%.o, $(CPPSOURCES)) $(patsubst $(SOURCEDIR)/%.c, $(BUILDDIR)/%.o, $(CSOURCES))
 
@@ -58,7 +58,7 @@ debug_dynamic: cpy_dirs $(OBJS)
 	$(LD) -shared $(LDFLAGS) $(LDDEBUG) $(OBJS) $(LDLIBS) -o $(BUILDDIR)/libPeoplezServerLib.so
 
 verify:
-	$(foreach f,$(VFSOURCES),$(VFDIR)/$(VF) -c -target Linux64 $(VFARGS) $(f) &&) echo ''
+	$(foreach f,$(VFSOURCES),$(VF) -c -target Linux64 $(VFARGS) $(f) &&) echo ''
 
 cpy_dirs:
 	$(shell cd src; find -type d -exec mkdir -p "../bin/{}" \;)

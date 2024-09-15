@@ -89,7 +89,7 @@ namespace Peoplez
 
 			size_t HttpCookie::o_ToStringSize() const
 			{
-				register size_t res = 24 + Name.Length() + Value.Length();
+				size_t res = 24 + Name.Length() + Value.Length();
 				if(!Comment.IsEmpty()) res += 12 + Comment.Length();
 				if(MaxAge > -1) res += 11 + MaxAge / 10;
 				if(!Path.IsEmpty()) res += 7 + Path.Length();

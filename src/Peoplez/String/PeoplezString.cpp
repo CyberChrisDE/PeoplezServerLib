@@ -37,13 +37,11 @@
 #include "PeoplezString.hpp"
 
 // Local includes
-#include "../General/Math.hpp"
-#include "../Preprocessor/System.hpp"
 #include "../System/Alignment.hpp"
 #include "../String/Parsing/IntToString.hpp"
-#include "../Preprocessor/System.hpp"
 
 // External includes
+#include <bit>
 #include <cassert>
 #include <cstdio>
 #include <cstring>
@@ -293,12 +291,12 @@ namespace Peoplez
 		{
 			size_t const len = Length();
 
-			if(BRANCH_EXPECT(len > 3, true))
+			if(len > 3) [[likely]]
 			{
 				size_t const sLen = len - 3; //Search length
 				char const *const end = data + sLen;
 
-				for(register char const *pos = (char const *) memchr(data + startPos, '\r', sLen); pos; pos = (char const *) memchr(pos + 1, '\r', end - pos))
+				for(char const *pos = (char const *) memchr(data + startPos, '\r', sLen); pos; pos = (char const *) memchr(pos + 1, '\r', end - pos))
 				{
 					if(pos[1] == '\n' && pos[2] == '\r' && pos[3] == '\n') return pos - data;
 				}
@@ -357,7 +355,7 @@ namespace Peoplez
 
 		bool PeoplezString::IsASCIICompatible(size_t const offset) const noexcept
 		{
-			register unsigned char const * pos = (unsigned char *) data + offset;
+			unsigned char const * pos = (unsigned char *) data + offset;
 
 			for(unsigned int rest = min((size_t)Alignment::alignmentRest(pos, 8), Length() - offset); rest; --rest, ++pos)
 			{
@@ -486,7 +484,7 @@ namespace Peoplez
 			if(result.capacity() < tokens) result.reserve(tokens);
 
 			// Split string
-			for(register char const *pos = (char const *) memchr(sourceChar, token, len); pos; pos = (char const *) memchr(position, token, end - position))
+			for(char const *pos = (char const *) memchr(sourceChar, token, len); pos; pos = (char const *) memchr(position, token, end - position))
 			{
 				sourceChar = position;
 				position = pos + 1;
@@ -514,7 +512,7 @@ namespace Peoplez
 			if(result.capacity() < tokens) result.reserve(tokens);
 
 			// Split string
-			for(register char const *pos = (char const *) memchr(sourceChar, token, len); pos; pos = (char const *) memchr(position, token, end - position))
+			for(char const *pos = (char const *) memchr(sourceChar, token, len); pos; pos = (char const *) memchr(position, token, end - position))
 			{
 				sourceChar = position;
 				position = pos + 1;
@@ -788,7 +786,7 @@ namespace Peoplez
 
 			for(unsigned char *srcPos = (unsigned char *) data; srcPos < srcEnd; ++srcPos)
 			{
-				size_t const leadingOnes = General::Math::LeadingOnes(*srcPos);
+				size_t const leadingOnes = std::countl_one(*srcPos);
 
 				//Ermitteln der Zeichennummer
 				switch(leadingOnes)
