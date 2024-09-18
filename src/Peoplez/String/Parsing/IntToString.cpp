@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019, 2024 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -98,7 +98,7 @@ namespace Peoplez
 
 				if(val < 0)
 				{
-					val_ = (val == -2147483648) ? (uint32_t) 2147483648 : (uint32_t) -val;
+					val_ = (val == -2147483648) ? (uint32_t) 2147483648U : (uint32_t) -val;
 					//@ open chars(target, count, _);
 					//@ open chars(target + 1, count - 1, _);
 					//@ character_limits(target + 1);
@@ -157,7 +157,7 @@ namespace Peoplez
 
 				if(val < 0)
 				{
-					val_ = (val == -9223372036854775807LL - 1) ? (uint64_t) 9223372036854775808ULL : (uint64_t) -val;
+					val_ = (val == -9223372036854775808LL) ? (uint64_t) 9223372036854775808ULL : (uint64_t) -val;
 					//@ open chars(target, count, _);
 					//@ open chars(target + 1, count - 1, _);
 					//@ character_limits(target + 1);

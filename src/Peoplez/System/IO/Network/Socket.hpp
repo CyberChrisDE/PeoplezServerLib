@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2024 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -101,7 +101,7 @@ namespace Peoplez
 					 * @param len Size of the buffer
 					 */
 					virtual int Recv(char *buf, size_t len) noexcept;
-					//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+					//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= INT_MAX &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
 					//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 
 					/**
@@ -111,7 +111,7 @@ namespace Peoplez
 					 * @param len Size of data in byte
 					 */
 					virtual int Send(const char* buf, size_t len) noexcept;
-					//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+					//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= INT_MAX &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
 					//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 
 					/**

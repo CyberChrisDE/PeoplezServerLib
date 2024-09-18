@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2019, 2024 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *

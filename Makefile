@@ -1,9 +1,43 @@
+# Copyright 2017 - 2019, 2023, 2024 Christian Geldermann
+#
+# This file is part of PeoplezServerLib.
+#
+# PeoplezServerLib is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PeoplezServerLib is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with PeoplezServerLib.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Diese Datei ist Teil von PeoplezServerLib.
+#
+# PeoplezServerLib ist Freie Software: Sie können es unter den Bedingungen
+# der GNU General Public License, wie von der Free Software Foundation,
+# Version 3 der Lizenz oder (nach Ihrer Wahl) jeder späteren
+# veröffentlichten Version, weiterverbreiten und/oder modifizieren.
+#
+# PeoplezServerLib wird in der Hoffnung, dass es nützlich sein wird, aber
+# OHNE JEDE GEWÄHRLEISTUNG, bereitgestellt; sogar ohne die implizite
+# Gewährleistung der MARKTFÄHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.
+# Siehe die GNU General Public License für weitere Details.
+#
+# Sie sollten eine Kopie der GNU General Public License zusammen mit
+# PeoplezServerLib erhalten haben. Wenn nicht, siehe
+# <http://www.gnu.org/licenses/>.
+
+
 # Compilers to use
 CC := gcc
 CXX := g++
 LD := g++
 MC := cbmc
-VF := /path/to/verifast
+VF := /home/christian/git/my_verifast/bin/verifast
 
 # Compilation flags
 CXXFLAGS := -std=c++20
@@ -23,12 +57,12 @@ SOURCEDIR := src
 BUILDDIR := bin
 
 # Verification parameters
-VFARGS := -I /path/to/verifast/includes
+VFARGS := -I /home/christian/git/includes
 
 # Determine source files and '.o'-files
 CPPSOURCES := $(shell find $(SOURCEDIR) -name '*.cpp')
 CSOURCES := $(shell find $(SOURCEDIR) -name '*.c')
-VFSOURCES := src/Peoplez/String/Parsing/IntToString.cpp src/Peoplez/System/Alignment.hpp src/Peoplez/System/IO/Network/Socket.cpp src/Peoplez/System/IO/Network/SecureSocket.cpp
+VFSOURCES := String/Parsing/IntToString.cpp System/Alignment.hpp System/IO/Network/Socket.cpp System/IO/Network/SecureSocket.cpp Services/Http/FileType.hpp
 #SOURCES := $(CSOURCES) $(CPPSOURCES)
 OBJS := $(patsubst $(SOURCEDIR)/%.cpp, $(BUILDDIR)/%.o, $(CPPSOURCES)) $(patsubst $(SOURCEDIR)/%.c, $(BUILDDIR)/%.o, $(CSOURCES))
 
@@ -58,7 +92,7 @@ debug_dynamic: cpy_dirs $(OBJS)
 	$(LD) -shared $(LDFLAGS) $(LDDEBUG) $(OBJS) $(LDLIBS) -o $(BUILDDIR)/libPeoplezServerLib.so
 
 verify:
-	$(foreach f,$(VFSOURCES),$(VF) -c -target Linux64 $(VFARGS) $(f) &&) echo ''
+	$(foreach f,$(VFSOURCES),echo '' && $(VF) -c -target Linux64 $(VFARGS) src/Peoplez/$(f) &&) echo ''
 
 cpy_dirs:
 	$(shell cd src; find -type d -exec mkdir -p "../bin/{}" \;)

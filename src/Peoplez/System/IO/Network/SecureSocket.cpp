@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Christian Geldermann
+ * Copyright 2017, 2024 Christian Geldermann
  *
  * This file is part of PeoplezServerLib.
  *
@@ -45,14 +45,14 @@ namespace Peoplez
 			namespace Network
 			{
 				int SecureSocket::Recv(char * const buf, size_t const len) noexcept
-				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= INT_MAX &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
 				//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
 					return IsOpen() ? SSL_read(ssl, buf, (int)len) : -1;
 				}
 
 				int SecureSocket::Send(char const * const buf, size_t const len) noexcept
-				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= 2147483647 &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
+				//@ requires valid(?sock, ?is_open) &*& chars(buf, len, _) &*& len <= INT_MAX &*& Peoplez::System::IO::Network::Socket_vtype(this, ?thisType);
 				//@ ensures valid(sock, is_open) &*& chars(buf, len, _) &*& Peoplez::System::IO::Network::Socket_vtype(this, thisType);
 				{
 					return IsOpen() ? SSL_write(ssl, buf, (int)len) : -1;
